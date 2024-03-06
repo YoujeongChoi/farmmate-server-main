@@ -7,28 +7,5 @@ import { UpdateAwDto } from './dto/update-aw.dto';
 export class AwsController {
   constructor(private readonly awsService: AwsService) {}
 
-  @Post()
-  create(@Body() createAwDto: CreateAwDto) {
-    return this.awsService.create(createAwDto);
-  }
 
-  @Get()
-  findAll() {
-    return this.awsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.awsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAwDto: UpdateAwDto) {
-    return this.awsService.update(+id, updateAwDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.awsService.remove(+id);
-  }
 }
