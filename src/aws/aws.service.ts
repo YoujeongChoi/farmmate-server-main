@@ -29,16 +29,24 @@ export class AwsService {
       file: Express.Multer.File,
       ext: string,
   ) {
+    const bucketName = this.configService.get<string>('AWS_BUCKET_NAME'); // 버킷 이름을 불러옵니다.
+
+    // 버킷 이름이 제공되지 않았다면, 에러를 발생시킵니다.
+    if (!bucketName) {
+      throw new Error('AWS S3 bucket name is not provided in the environment variables');
+    }
+
     const command = new PutObjectCommand({
-      Bucket: this.configService.get<string>('AWS_S3_BUCKET_NAME'), // S3 버킷 이름을 가져옵니다.
+      Bucket: bucketName, // 여기에 버킷 이름을 설정합니다.
       Key: fileName,
       Body: file.buffer,
-      ACL: 'public-read',
+      // ACL: 'public-read',
       ContentType: `image/${ext}`,
     });
 
-    await this.s3Client.send(command); // this.s3Client를 사용하여 명령을 보냅니다.
+    await this.s3Client.send(command);
 
-    return `https://${this.configService.get<string>('AWS_S3_BUCKET_NAME')}.s3.${this.configService.get<string>('AWS_BUCKET_REGION')}.amazonaws.com/${fileName}`;
+    return `https://${bucketName}.s3.${this.configService.get<string>('AWS_BUCKET_REGION')}.amazonaws.com/${fileName}`;
   }
+
 }
