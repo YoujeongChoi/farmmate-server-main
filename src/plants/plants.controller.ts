@@ -13,7 +13,7 @@ export class PlantsController {
     return this.plantsService.getAll();
   }
 
-  @Get('/:plant_uuid')
+  @Get('/:plantUuid')
   async findOne(@Param('plant_uuid') plant_uuid: string): Promise<Plant> {
     return this.plantsService.getOne(plant_uuid);
   }
@@ -23,13 +23,19 @@ export class PlantsController {
     return this.plantsService.create(plantData);
   }
 
-  @Delete("/:plant_uuid")
+  @Delete("/:plantUuid")
   async remove(@Param("plant_uuid") plant_uuid: string): Promise<void> {
     return this.plantsService.deleteOne(plant_uuid);
   }
 
-  @Patch("/:plant_uuid")
+  @Patch("/:plantUuid")
   async update(@Param("plant_uuid") plant_uuid: string, @Body() updateData: UpdatePlantDto): Promise<Plant> { // 메서드 파라미터 이름 변경
     return this.plantsService.update(plant_uuid, updateData);
   }
+
+  @Get('/device/:deviceId')
+  async getAllByDeviceId(@Param('deviceId') deviceId: string): Promise<Plant[]> {
+    return this.plantsService.getAllByDeviceId(deviceId);
+  }
+
 }

@@ -44,7 +44,6 @@ export class PlantsService {
   }
 
 
-
   async deleteOne(plant_uuid: string): Promise<void> {
     const result = await this.plantsRepository.delete({ plant_uuid });
     if (result.affected === 0) {
@@ -58,4 +57,10 @@ export class PlantsService {
     await this.plantsRepository.save(plant);
     return plant;
   }
+
+  async getAllByDeviceId(deviceId: string): Promise<Plant[]> {
+    const plants = await this.plantsRepository.find({ where: { device_id: deviceId } });
+    return plants;
+  }
+
 }
