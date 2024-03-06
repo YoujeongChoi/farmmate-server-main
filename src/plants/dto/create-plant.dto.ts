@@ -11,6 +11,10 @@ export class CreatePlantDto {
 
     @IsString()
     @IsOptional()
+    readonly plantName: string;
+
+    @IsString()
+    @IsOptional()
     readonly plantLocation: string;
 
     @IsString()

@@ -31,6 +31,10 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
+], Plant.prototype, "plant_name", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
 ], Plant.prototype, "plant_location", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),

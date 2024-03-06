@@ -38,6 +38,7 @@ let PlantsService = class PlantsService {
         const newPlant = this.plantsRepository.create({
             device_id: deviceInstance?.device_id,
             plant_type: plantData.plantType,
+            plant_name: plantData.plantName,
             plant_location: plantData.plantLocation,
             memo: plantData.memo,
             first_planting_date: plantData.firstPlantingDate,

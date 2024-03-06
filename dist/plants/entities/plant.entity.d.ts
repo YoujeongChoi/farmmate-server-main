@@ -2,6 +2,7 @@ export declare class Plant {
     plant_uuid: string;
     device_id: string;
     plant_type: string;
+    plant_name: string;
     plant_location: string;
     memo: string;
     first_planting_date: string;
