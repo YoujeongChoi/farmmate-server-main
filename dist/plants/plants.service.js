@@ -57,6 +57,10 @@ let PlantsService = class PlantsService {
         await this.plantsRepository.save(plant);
         return plant;
     }
+    async getAllByDeviceId(deviceId) {
+        const plants = await this.plantsRepository.find({ where: { device_id: deviceId } });
+        return plants;
+    }
 };
 exports.PlantsService = PlantsService;
 exports.PlantsService = PlantsService = __decorate([

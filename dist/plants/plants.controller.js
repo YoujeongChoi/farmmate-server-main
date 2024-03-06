@@ -36,6 +36,9 @@ let PlantsController = class PlantsController {
     async update(plant_uuid, updateData) {
         return this.plantsService.update(plant_uuid, updateData);
     }
+    async getAllByDeviceId(deviceId) {
+        return this.plantsService.getAllByDeviceId(deviceId);
+    }
 };
 exports.PlantsController = PlantsController;
 __decorate([
@@ -45,7 +48,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PlantsController.prototype, "getAll", null);
 __decorate([
-    (0, common_1.Get)('/:plant_uuid'),
+    (0, common_1.Get)('/:plantUuid'),
     __param(0, (0, common_1.Param)('plant_uuid')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -59,20 +62,27 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PlantsController.prototype, "create", null);
 __decorate([
-    (0, common_1.Delete)("/:plant_uuid"),
+    (0, common_1.Delete)("/:plantUuid"),
     __param(0, (0, common_1.Param)("plant_uuid")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], PlantsController.prototype, "remove", null);
 __decorate([
-    (0, common_1.Patch)("/:plant_uuid"),
+    (0, common_1.Patch)("/:plantUuid"),
     __param(0, (0, common_1.Param)("plant_uuid")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_plant_dto_1.UpdatePlantDto]),
     __metadata("design:returntype", Promise)
 ], PlantsController.prototype, "update", null);
+__decorate([
+    (0, common_1.Get)('/device/:deviceId'),
+    __param(0, (0, common_1.Param)('deviceId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PlantsController.prototype, "getAllByDeviceId", null);
 exports.PlantsController = PlantsController = __decorate([
     (0, common_1.Controller)('api/plant'),
     __metadata("design:paramtypes", [plants_service_1.PlantsService])

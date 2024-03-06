@@ -10,4 +10,5 @@ export declare class PlantsController {
     create(plantData: CreatePlantDto): Promise<Plant>;
     remove(plant_uuid: string): Promise<void>;
     update(plant_uuid: string, updateData: UpdatePlantDto): Promise<Plant>;
+    getAllByDeviceId(deviceId: string): Promise<Plant[]>;
 }

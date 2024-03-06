@@ -15,6 +15,10 @@ const events_module_1 = require("./events/events.module");
 const plants_module_1 = require("./plants/plants.module");
 const typeorm_1 = require("@nestjs/typeorm");
 const devices_module_1 = require("./devices/devices.module");
+const files_module_1 = require("./files/files.module");
+const platform_express_1 = require("@nestjs/platform-express");
+const files_service_1 = require("./files/files.service");
+const aws_module_1 = require("./aws/aws.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -45,7 +49,12 @@ exports.AppModule = AppModule = __decorate([
                 }),
             }),
             plants_module_1.PlantsModule,
-            devices_module_1.DevicesModule
+            devices_module_1.DevicesModule,
+            files_module_1.FilesModule,
+            platform_express_1.MulterModule.registerAsync({
+                useClass: files_service_1.FilesService,
+            }),
+            aws_module_1.AwsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
