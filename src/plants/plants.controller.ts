@@ -1,12 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UploadedFiles,
+  UseInterceptors,
+  BadRequestException
+} from '@nestjs/common';
 import { PlantsService } from './plants.service';
 import { CreatePlantDto } from './dto/create-plant.dto';
 import { UpdatePlantDto } from './dto/update-plant.dto';
 import { Plant } from "./entities/plant.entity";
+import {FileFieldsInterceptor} from "@nestjs/platform-express";
+import {AwsService} from "../aws/aws.service";
 
 @Controller('api/plant')
 export class PlantsController {
-  constructor(private readonly plantsService: PlantsService) {}
+  constructor(
+      private readonly plantsService: PlantsService,
+      private readonly awsService: AwsService
+  ) {}
 
   @Get()
   async getAll(): Promise<Plant[]> {
@@ -19,8 +35,29 @@ export class PlantsController {
   }
 
   @Post()
-  async create(@Body() plantData: CreatePlantDto): Promise<Plant> {
-    return this.plantsService.create(plantData);
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'plantImg', maxCount: 1 }
+  ]))
+  async create(
+      @Body() createPlantDto: CreatePlantDto,
+      @UploadedFiles() files: { plantImg?: Express.Multer.File[] }
+  ): Promise<Plant> {
+    const imageFile = files.plantImg?.[0]; // 이미지 파일
+    let imageUrl;
+
+    if (imageFile) {
+      // AWS Service를 사용하여 파일을 S3에 업로드하고, 업로드된 파일의 URL을 가져옵니다.
+      imageUrl = await this.awsService.imageUploadToS3(`plants/${Date.now()}_${imageFile.originalname}`, imageFile, imageFile.mimetype.split('/')[1]);
+    } else {
+      imageUrl = null
+    }
+
+    // 식물 정보와 이미지 URL을 함께 저장
+    return this.plantsService.create({
+      ...createPlantDto,
+      imageUrl
+
+    });
   }
 
   @Delete("/:plantUuid")

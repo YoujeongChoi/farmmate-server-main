@@ -20,4 +20,8 @@ export class CreatePlantDto {
     @IsString()
     @IsOptional()
     readonly firstPlantingDate: string;
+
+    @IsString()
+    @IsOptional()
+    readonly imageUrl: string;
 }

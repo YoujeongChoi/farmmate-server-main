@@ -7,4 +7,5 @@ export declare class Plant {
     first_planting_date: string;
     created_at: Date;
     updated_at: Date;
+    image_url?: string;
 }

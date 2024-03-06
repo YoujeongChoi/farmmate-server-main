@@ -48,6 +48,10 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], Plant.prototype, "updated_at", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Plant.prototype, "image_url", void 0);
 exports.Plant = Plant = __decorate([
     (0, typeorm_1.Entity)({ schema: 'app', name: 'plant' })
 ], Plant);

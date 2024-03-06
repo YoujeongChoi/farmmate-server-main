@@ -35,4 +35,7 @@ export class Plant {
 
     @UpdateDateColumn()
     updated_at: Date;
+
+    @Column({ nullable: true })
+    image_url?: string;
 }

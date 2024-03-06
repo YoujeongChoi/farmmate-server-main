@@ -13,6 +13,7 @@ const plants_controller_1 = require("./plants.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const plant_entity_1 = require("./entities/plant.entity");
 const device_entity_1 = require("../devices/entities/device.entity");
+const aws_service_1 = require("../aws/aws.service");
 let PlantsModule = class PlantsModule {
 };
 exports.PlantsModule = PlantsModule;
@@ -20,7 +21,7 @@ exports.PlantsModule = PlantsModule = __decorate([
     (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([plant_entity_1.Plant, device_entity_1.Device])],
         controllers: [plants_controller_1.PlantsController],
-        providers: [plants_service_1.PlantsService],
+        providers: [plants_service_1.PlantsService, aws_service_1.AwsService],
     })
 ], PlantsModule);
 //# sourceMappingURL=plants.module.js.map

@@ -17,9 +17,12 @@ const common_1 = require("@nestjs/common");
 const plants_service_1 = require("./plants.service");
 const create_plant_dto_1 = require("./dto/create-plant.dto");
 const update_plant_dto_1 = require("./dto/update-plant.dto");
+const platform_express_1 = require("@nestjs/platform-express");
+const aws_service_1 = require("../aws/aws.service");
 let PlantsController = class PlantsController {
-    constructor(plantsService) {
+    constructor(plantsService, awsService) {
         this.plantsService = plantsService;
+        this.awsService = awsService;
     }
     async getAll() {
         return this.plantsService.getAll();
@@ -27,8 +30,19 @@ let PlantsController = class PlantsController {
     async findOne(plant_uuid) {
         return this.plantsService.getOne(plant_uuid);
     }
-    async create(plantData) {
-        return this.plantsService.create(plantData);
+    async create(createPlantDto, files) {
+        const imageFile = files.plantImg?.[0];
+        let imageUrl;
+        if (imageFile) {
+            imageUrl = await this.awsService.imageUploadToS3(`plants/${Date.now()}_${imageFile.originalname}`, imageFile, imageFile.mimetype.split('/')[1]);
+        }
+        else {
+            imageUrl = null;
+        }
+        return this.plantsService.create({
+            ...createPlantDto,
+            imageUrl
+        });
     }
     async remove(plant_uuid) {
         return this.plantsService.deleteOne(plant_uuid);
@@ -56,9 +70,13 @@ __decorate([
 ], PlantsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([
+        { name: 'plantImg', maxCount: 1 }
+    ])),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFiles)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_plant_dto_1.CreatePlantDto]),
+    __metadata("design:paramtypes", [create_plant_dto_1.CreatePlantDto, Object]),
     __metadata("design:returntype", Promise)
 ], PlantsController.prototype, "create", null);
 __decorate([
@@ -85,6 +103,7 @@ __decorate([
 ], PlantsController.prototype, "getAllByDeviceId", null);
 exports.PlantsController = PlantsController = __decorate([
     (0, common_1.Controller)('api/plant'),
-    __metadata("design:paramtypes", [plants_service_1.PlantsService])
+    __metadata("design:paramtypes", [plants_service_1.PlantsService,
+        aws_service_1.AwsService])
 ], PlantsController);
 //# sourceMappingURL=plants.controller.js.map

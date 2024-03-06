@@ -4,4 +4,5 @@ export declare class CreatePlantDto {
     readonly plantLocation: string;
     readonly memo: string;
     readonly firstPlantingDate: string;
+    readonly imageUrl: string;
 }

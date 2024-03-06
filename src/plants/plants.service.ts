@@ -37,6 +37,7 @@ export class PlantsService {
       plant_location: plantData.plantLocation,
       memo: plantData.memo,
       first_planting_date: plantData.firstPlantingDate,
+      image_url: plantData.imageUrl,
     });
 
     await this.plantsRepository.save(newPlant);
