@@ -8,7 +8,7 @@ import {
   Delete,
   UploadedFiles,
   UseInterceptors,
-  BadRequestException, UploadedFile
+  BadRequestException, UploadedFile, Logger
 } from '@nestjs/common';
 import { PlantsService } from './plants.service';
 import { CreatePlantDto } from './dto/create-plant.dto';
@@ -78,6 +78,7 @@ export class PlantsController {
   /*
   * 진단
   * */
+  private readonly logger = new Logger(PlantsController.name);
   @Post('/diagnose')
   @UseInterceptors(FileInterceptor('image', {
     fileFilter: (req, file, callback) => {
@@ -91,6 +92,7 @@ export class PlantsController {
       @Body() diagnosePlantDto: DiagnosePlantDto,
       @UploadedFile() image: Express.Multer.File,
   ): Promise<any> {
+    this.logger.log('Received a request for /diagnose');
     if (!image) {
       throw new BadRequestException('Image file is required');
     }
@@ -101,8 +103,9 @@ export class PlantsController {
     formData.append('image', image.buffer, image.originalname);
 
     try {
+      this.logger.debug(`Sending request to Flask with plantType: ${diagnosePlantDto.plantType} and image: ${image.originalname}`);
       // Flask 딥러닝 API로 요청 전송
-      const response = await axios.post('http://localhost:5000/analyze', formData, {
+      const response = await axios.post('http://127.0.0.1:5000/analyze', formData, {
         headers: {
           ...formData.getHeaders(),
         },
