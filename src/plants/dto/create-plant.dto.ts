@@ -17,6 +17,7 @@ export class CreatePlantDto {
     @IsOptional()
     readonly plantLocation: string;
 
+
     @IsString()
     @IsOptional()
     readonly memo: string;

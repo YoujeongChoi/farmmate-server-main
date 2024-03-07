@@ -30,9 +30,10 @@ export class PlantsController {
   }
 
   @Get('/:plantUuid')
-  async findOne(@Param('plant_uuid') plant_uuid: string): Promise<Plant> {
-    return this.plantsService.getOne(plant_uuid);
+  async findOne(@Param('plantUuid') plantUuid: string): Promise<Plant> {
+    return this.plantsService.getOne(plantUuid);
   }
+
 
   @Post()
   @UseInterceptors(FileFieldsInterceptor([

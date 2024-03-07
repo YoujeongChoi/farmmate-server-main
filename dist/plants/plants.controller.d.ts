@@ -9,7 +9,7 @@ export declare class PlantsController {
     private readonly awsService;
     constructor(plantsService: PlantsService, awsService: AwsService);
     getAll(): Promise<Plant[]>;
-    findOne(plant_uuid: string): Promise<Plant>;
+    findOne(plantUuid: string): Promise<Plant>;
     create(createPlantDto: CreatePlantDto, files: {
         plantImg?: Express.Multer.File[];
     }): Promise<Plant>;

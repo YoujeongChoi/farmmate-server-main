@@ -11,6 +11,7 @@ export class MulterBuilder {
     private readonly bucketName: string;
     private readonly allowedMimeTypes: Array<string> = [];
 
+
     private resource = '';
     private path = '';
 

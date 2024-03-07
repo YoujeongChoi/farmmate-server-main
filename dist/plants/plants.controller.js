@@ -27,8 +27,8 @@ let PlantsController = class PlantsController {
     async getAll() {
         return this.plantsService.getAll();
     }
-    async findOne(plant_uuid) {
-        return this.plantsService.getOne(plant_uuid);
+    async findOne(plantUuid) {
+        return this.plantsService.getOne(plantUuid);
     }
     async create(createPlantDto, files) {
         const imageFile = files.plantImg?.[0];
@@ -63,7 +63,7 @@ __decorate([
 ], PlantsController.prototype, "getAll", null);
 __decorate([
     (0, common_1.Get)('/:plantUuid'),
-    __param(0, (0, common_1.Param)('plant_uuid')),
+    __param(0, (0, common_1.Param)('plantUuid')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
