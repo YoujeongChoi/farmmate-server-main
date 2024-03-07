@@ -25,28 +25,29 @@ export class AwsService {
   }
 
   async imageUploadToS3(
-      fileName: string,
+      fileName: string | null,
       file: Express.Multer.File,
-      ext: string,
+      ext: string | null,
   ) {
-    const bucketName = this.configService.get<string>('AWS_BUCKET_NAME'); // 버킷 이름을 불러옵니다.
-
-    // 버킷 이름이 제공되지 않았다면, 에러를 발생시킵니다.
+    const bucketName = this.configService.get<string>('AWS_BUCKET_NAME');
     if (!bucketName) {
       throw new Error('AWS S3 bucket name is not provided in the environment variables');
     }
 
+    // Provide a default fileName if null
+    const safeFileName = fileName ?? `default_${Date.now()}`;
+    const safeExt = ext ?? 'jpg'; // Provide a default extension if null
+
     const command = new PutObjectCommand({
-      Bucket: bucketName, // 여기에 버킷 이름을 설정합니다.
-      Key: fileName,
+      Bucket: bucketName,
+      Key: safeFileName,
       Body: file.buffer,
-      // ACL: 'public-read',
-      ContentType: `image/${ext}`,
+      ContentType: `image/${safeExt}`,
     });
 
     await this.s3Client.send(command);
-
-    return `https://${bucketName}.s3.${this.configService.get<string>('AWS_BUCKET_REGION')}.amazonaws.com/${fileName}`;
+    return `https://${bucketName}.s3.${this.configService.get<string>('AWS_BUCKET_REGION')}.amazonaws.com/${safeFileName}`;
   }
+
 
 }

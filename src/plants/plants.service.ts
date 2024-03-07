@@ -107,3 +107,20 @@ export class PlantsService {
   }
 
 }
+
+
+import { PipeTransform, BadRequestException} from '@nestjs/common';
+
+@Injectable()
+export class FormDataParseBooleanPipe implements PipeTransform<string, boolean> {
+  transform(value: string): boolean {
+    if (value === 'true') {  // 'true' 문자열 처리
+      return true;
+    } else if (value === 'false') {  // 'false' 문자열 처리
+      return false;
+    } else {
+      throw new BadRequestException(`Validation failed. Boolean value expected, but received: ${value}`);
+    }
+  }
+}
+

@@ -11,6 +11,7 @@ import { FilesModule } from './files/files.module';
 import {MulterModule} from "@nestjs/platform-express";
 import {FilesService} from "./files/files.service";
 import {AwsModule} from "./aws/aws.module";
+import { DiariesModule } from './diaries/diaries.module';
 
 @Module({
     imports: [
@@ -44,6 +45,7 @@ import {AwsModule} from "./aws/aws.module";
             useClass: FilesService,
         }),
         AwsModule,
+        DiariesModule,
     ],
     controllers: [AppController],
     providers: [AppService],
