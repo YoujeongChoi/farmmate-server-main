@@ -18,6 +18,8 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const plant_entity_1 = require("./entities/plant.entity");
 const device_entity_1 = require("../devices/entities/device.entity");
+const axios_1 = require("axios");
+const FormData = require("form-data");
 let PlantsService = class PlantsService {
     constructor(plantsRepository, deviceRepository) {
         this.plantsRepository = plantsRepository;
@@ -62,6 +64,28 @@ let PlantsService = class PlantsService {
     async getAllByDeviceId(deviceId) {
         const plants = await this.plantsRepository.find({ where: { device_id: deviceId } });
         return plants;
+    }
+    async diagnose(plantType, image) {
+        const formData = new FormData();
+        formData.append('plantType', plantType);
+        formData.append('image', image.buffer, image.originalname);
+        const response = await axios_1.default.post('http://deeplearning-server-url/analyze', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    }
+    async sendData(plantType, imageBuffer, imageName) {
+        const formData = new FormData();
+        formData.append('plantType', plantType);
+        formData.append('image', imageBuffer, imageName);
+        const response = await axios_1.default.post('http://deeplearning-server-url/analyze', formData, {
+            headers: {
+                ...formData.getHeaders(),
+            },
+        });
+        return response.data;
     }
 };
 exports.PlantsService = PlantsService;

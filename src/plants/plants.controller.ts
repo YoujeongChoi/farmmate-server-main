@@ -8,14 +8,15 @@ import {
   Delete,
   UploadedFiles,
   UseInterceptors,
-  BadRequestException
+  BadRequestException, UploadedFile
 } from '@nestjs/common';
 import { PlantsService } from './plants.service';
 import { CreatePlantDto } from './dto/create-plant.dto';
 import { UpdatePlantDto } from './dto/update-plant.dto';
 import { Plant } from "./entities/plant.entity";
-import {FileFieldsInterceptor} from "@nestjs/platform-express";
+import {FileFieldsInterceptor, FileInterceptor} from "@nestjs/platform-express";
 import {AwsService} from "../aws/aws.service";
+import {DiagnosePlantDto} from "./dto/diagnose-plant.dto";
 
 @Controller('api/plant')
 export class PlantsController {
@@ -24,16 +25,11 @@ export class PlantsController {
       private readonly awsService: AwsService
   ) {}
 
-  @Get()
-  async getAll(): Promise<Plant[]> {
-    return this.plantsService.getAll();
-  }
-
+  // 식물
   @Get('/:plantUuid')
   async findOne(@Param('plantUuid') plantUuid: string): Promise<Plant> {
     return this.plantsService.getOne(plantUuid);
   }
-
 
   @Post()
   @UseInterceptors(FileFieldsInterceptor([
@@ -76,4 +72,15 @@ export class PlantsController {
     return this.plantsService.getAllByDeviceId(deviceId);
   }
 
+  /*
+  * 진단
+  * */
+  @Post('/diagnose')
+  @UseInterceptors(FileInterceptor('image'))
+  async diagnosePlant(
+      @Body() diagnosePlantDto: DiagnosePlantDto,
+      @UploadedFile() image: Express.Multer.File
+  ): Promise<any> {
+    return this.plantsService.diagnose(diagnosePlantDto.plantType, image);
+  }
 }

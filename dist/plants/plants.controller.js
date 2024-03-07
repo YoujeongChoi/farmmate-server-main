@@ -19,13 +19,11 @@ const create_plant_dto_1 = require("./dto/create-plant.dto");
 const update_plant_dto_1 = require("./dto/update-plant.dto");
 const platform_express_1 = require("@nestjs/platform-express");
 const aws_service_1 = require("../aws/aws.service");
+const diagnose_plant_dto_1 = require("./dto/diagnose-plant.dto");
 let PlantsController = class PlantsController {
     constructor(plantsService, awsService) {
         this.plantsService = plantsService;
         this.awsService = awsService;
-    }
-    async getAll() {
-        return this.plantsService.getAll();
     }
     async findOne(plantUuid) {
         return this.plantsService.getOne(plantUuid);
@@ -53,14 +51,11 @@ let PlantsController = class PlantsController {
     async getAllByDeviceId(deviceId) {
         return this.plantsService.getAllByDeviceId(deviceId);
     }
+    async diagnosePlant(diagnosePlantDto, image) {
+        return this.plantsService.diagnose(diagnosePlantDto.plantType, image);
+    }
 };
 exports.PlantsController = PlantsController;
-__decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], PlantsController.prototype, "getAll", null);
 __decorate([
     (0, common_1.Get)('/:plantUuid'),
     __param(0, (0, common_1.Param)('plantUuid')),
@@ -101,6 +96,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], PlantsController.prototype, "getAllByDeviceId", null);
+__decorate([
+    (0, common_1.Post)('/diagnose'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [diagnose_plant_dto_1.DiagnosePlantDto, Object]),
+    __metadata("design:returntype", Promise)
+], PlantsController.prototype, "diagnosePlant", null);
 exports.PlantsController = PlantsController = __decorate([
     (0, common_1.Controller)('api/plant'),
     __metadata("design:paramtypes", [plants_service_1.PlantsService,

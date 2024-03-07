@@ -1,3 +1,5 @@
+/// <reference types="multer" />
+/// <reference types="node" />
 import { Repository } from 'typeorm';
 import { Plant } from './entities/plant.entity';
 import { CreatePlantDto } from './dto/create-plant.dto';
@@ -13,4 +15,6 @@ export declare class PlantsService {
     deleteOne(plant_uuid: string): Promise<void>;
     update(plant_uuid: string, updateData: UpdatePlantDto): Promise<Plant>;
     getAllByDeviceId(deviceId: string): Promise<Plant[]>;
+    diagnose(plantType: string, image: Express.Multer.File): Promise<any>;
+    sendData(plantType: string, imageBuffer: Buffer, imageName: string): Promise<any>;
 }
