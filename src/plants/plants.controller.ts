@@ -17,6 +17,9 @@ import { Plant } from "./entities/plant.entity";
 import {FileFieldsInterceptor, FileInterceptor} from "@nestjs/platform-express";
 import {AwsService} from "../aws/aws.service";
 import {DiagnosePlantDto} from "./dto/diagnose-plant.dto";
+import axios from "axios";
+import { Express } from 'express';
+import * as FormData from 'form-data';
 
 @Controller('api/plant')
 export class PlantsController {
@@ -76,11 +79,39 @@ export class PlantsController {
   * 진단
   * */
   @Post('/diagnose')
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('image', {
+    fileFilter: (req, file, callback) => {
+      if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+        return callback(new BadRequestException('Unsupported file type'), false);
+      }
+      callback(null, true);
+    },
+  }))
   async diagnosePlant(
       @Body() diagnosePlantDto: DiagnosePlantDto,
-      @UploadedFile() image: Express.Multer.File
+      @UploadedFile() image: Express.Multer.File,
   ): Promise<any> {
-    return this.plantsService.diagnose(diagnosePlantDto.plantType, image);
+    if (!image) {
+      throw new BadRequestException('Image file is required');
+    }
+
+    // 이미지 파일과 plantType을 FormData로 준비
+    const formData = new FormData();
+    formData.append('plantType', diagnosePlantDto.plantType);
+    formData.append('image', image.buffer, image.originalname);
+
+    try {
+      // Flask 딥러닝 API로 요청 전송
+      const response = await axios.post('http://localhost:5000/analyze', formData, {
+        headers: {
+          ...formData.getHeaders(),
+        },
+      });
+
+      // Flask 서버로부터 받은 응답 반환
+      return response.data;
+    } catch (error) {
+      throw new BadRequestException('Failed to diagnose plant');
+    }
   }
 }

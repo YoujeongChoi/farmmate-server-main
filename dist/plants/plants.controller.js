@@ -20,6 +20,8 @@ const update_plant_dto_1 = require("./dto/update-plant.dto");
 const platform_express_1 = require("@nestjs/platform-express");
 const aws_service_1 = require("../aws/aws.service");
 const diagnose_plant_dto_1 = require("./dto/diagnose-plant.dto");
+const axios_1 = require("axios");
+const FormData = require("form-data");
 let PlantsController = class PlantsController {
     constructor(plantsService, awsService) {
         this.plantsService = plantsService;
@@ -52,7 +54,23 @@ let PlantsController = class PlantsController {
         return this.plantsService.getAllByDeviceId(deviceId);
     }
     async diagnosePlant(diagnosePlantDto, image) {
-        return this.plantsService.diagnose(diagnosePlantDto.plantType, image);
+        if (!image) {
+            throw new common_1.BadRequestException('Image file is required');
+        }
+        const formData = new FormData();
+        formData.append('plantType', diagnosePlantDto.plantType);
+        formData.append('image', image.buffer, image.originalname);
+        try {
+            const response = await axios_1.default.post('http://localhost:5000/analyze', formData, {
+                headers: {
+                    ...formData.getHeaders(),
+                },
+            });
+            return response.data;
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('Failed to diagnose plant');
+        }
     }
 };
 exports.PlantsController = PlantsController;
@@ -98,7 +116,14 @@ __decorate([
 ], PlantsController.prototype, "getAllByDeviceId", null);
 __decorate([
     (0, common_1.Post)('/diagnose'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', {
+        fileFilter: (req, file, callback) => {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+                return callback(new common_1.BadRequestException('Unsupported file type'), false);
+            }
+            callback(null, true);
+        },
+    })),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
