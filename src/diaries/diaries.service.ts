@@ -71,8 +71,30 @@ export class DiariesService {
 
 
 
-  async findAll(plantUuid: string) {
-    return true;
+  async findAll(date?: string, plant?: string) {
+    const whereConditions: any = {};
+
+    // Check if plant is provided and match it against the plant_uuid
+    if (plant) {
+      whereConditions['plant'] = { plant_uuid: plant };
+    }
+
+    // Check if date is provided and match it against the diary_date
+    if (date) {
+      whereConditions['diary_date'] = date;
+    }
+
+    // Filter based on the provided conditions
+    const diaries = await this.diaryRepository.find({
+      where: whereConditions,
+      relations: ['plant']
+    });
+
+    if (!diaries.length) {
+      throw new NotFoundException(`Diaries not found with the provided parameters.`);
+    }
+
+    return diaries;
   }
 
   async findOne(plantUuid: string, diaryUuid: string) {

@@ -7,14 +7,14 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFile
+  UploadedFile, Query
 } from '@nestjs/common';
 import { DiariesService } from './diaries.service';
 import { CreateDiaryDto } from './dto/create-diary.dto';
 import { UpdateDiaryDto } from './dto/update-diary.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('api/plant/:plantUuid/diary')
+@Controller('api/diary')
 export class DiariesController {
   constructor(private readonly diariesService: DiariesService) {}
 
@@ -46,8 +46,11 @@ export class DiariesController {
   }
 
   @Get()
-  findAll(@Param('plantUuid') plantUuid: string) {
-    return this.diariesService.findAll(plantUuid);
+  findAll(
+      @Query('date') date: string,
+      @Query('plant') plant: string
+  ) {
+    return this.diariesService.findAll(date, plant);
   }
   @Patch(':diaryUuid')
   @UseInterceptors(FileInterceptor('image'))
