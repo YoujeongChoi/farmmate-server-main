@@ -15,10 +15,11 @@ export class DiariesService {
       private readonly awsService: AwsService,
   ) {}
 
-  async create(plantUuid: string, createDiaryDto: CreateDiaryDto, file: Express.Multer.File) {
-    const plant = await this.plantRepository.findOneBy({ plant_uuid: plantUuid });
+  async create(createDiaryDto: CreateDiaryDto, file: Express.Multer.File) {
+
+    const plant = await this.plantRepository.findOneBy({ plant_uuid: createDiaryDto.plantUuid });
     if (!plant) {
-      throw new NotFoundException(`Plant with UUID ${plantUuid} not found`);
+      throw new NotFoundException(`UUID가 ${createDiaryDto.plantUuid}인 식물을 찾을 수 없습니다`);
     }
 
 
@@ -50,11 +51,11 @@ export class DiariesService {
   }
 
 
-  async update(plantUuid: string, diaryUuid: string, updateDiaryDto: UpdateDiaryDto, file: Express.Multer.File) {
+  async update(diaryUuid: string, updateDiaryDto: UpdateDiaryDto, file: Express.Multer.File) {
     const fileName = file ? `${Date.now()}_${file.originalname}` : null;
     const ext = file ? file.mimetype.split('/')[1] : null;
     const imageUrl = file ? await this.awsService.imageUploadToS3(fileName, file, ext) : null;
-    const diary = await this.diaryRepository.findOne({ where: { diary_uuid: diaryUuid, plant: { plant_uuid: plantUuid } } });
+    const diary = await this.diaryRepository.findOne({ where: { diary_uuid: diaryUuid } });
 
     if (!diary) {
       throw new NotFoundException(`Diary #${diaryUuid} not found`);
@@ -97,13 +98,11 @@ export class DiariesService {
     return diaries;
   }
 
-  async findOne(plantUuid: string, diaryUuid: string) {
+  async findOne(diaryUuid: string) {
     const diary = await this.diaryRepository.findOne({
       where: {
-        diary_uuid: diaryUuid,
-        plant: { plant_uuid: plantUuid }
-      },
-      relations: ['plant']
+        diary_uuid: diaryUuid
+      }
     });
     if (!diary) {
       throw new NotFoundException(`Diary with UUID ${diaryUuid} not found`);

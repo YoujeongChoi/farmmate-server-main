@@ -21,7 +21,7 @@ export class DiariesController {
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(
-      @Param('plantUuid') plantUuid: string,
+      // @Param('plantUuid') plantUuid: string,
       @Body() rawBody: any,
       @UploadedFile() file: Express.Multer.File
   ) {
@@ -34,15 +34,14 @@ export class DiariesController {
       pesticideFlag: pesticideFlag === 'true' ? true : false,
     };
 
-    return this.diariesService.create(plantUuid, createDiaryDto, file);
+    return this.diariesService.create(createDiaryDto, file);
   }
 
-  @Get(':diaryUuid')
+  @Get('/:diaryUuid')
   findOne(
-      @Param('plantUuid') plantUuid: string,
-      @Param('diaryUuid') diaryUuid: string
+      @Param('plantUuid') plantUuid: string
   ) {
-    return this.diariesService.findOne(plantUuid, diaryUuid);
+    return this.diariesService.findOne(plantUuid);
   }
 
   @Get()
@@ -52,10 +51,9 @@ export class DiariesController {
   ) {
     return this.diariesService.findAll(date, plant);
   }
-  @Patch(':diaryUuid')
+  @Patch('/:diaryUuid')
   @UseInterceptors(FileInterceptor('image'))
   update(
-      @Param('plantUuid') plantUuid: string,
       @Param('diaryUuid') diaryUuid: string,
       @Body() rawBody: any,
       @UploadedFile() file: Express.Multer.File
@@ -70,7 +68,7 @@ export class DiariesController {
       pesticideFlag: pesticideFlag === 'true'
     };
 
-    return this.diariesService.update(plantUuid, diaryUuid, updateDiaryDto, file);
+    return this.diariesService.update(diaryUuid, updateDiaryDto, file);
   }
 
 
