@@ -74,8 +74,9 @@ export class PlantsService {
       return '북마크가 등록되었습니다.';
     } else {
       if (existingBookmark.deleted_at) {
-        await this.bookmarkRepository.recover(existingBookmark);
-        return '북마크가 등록되었습니다.';
+        existingBookmark.deleted_at = null; // Soft delete 해제
+        await this.bookmarkRepository.save(existingBookmark);
+        return '북마크가 다시 등록되었습니다.';
       } else {
         await this.bookmarkRepository.softDelete({ bookmark_uuid: existingBookmark.bookmark_uuid });
         return '북마크가 해제되었습니다.';

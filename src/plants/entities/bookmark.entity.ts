@@ -25,6 +25,6 @@ export class Bookmark {
     @CreateDateColumn()
     created_at: Date;
 
-    @DeleteDateColumn()
-    deleted_at?: Date;
+    @DeleteDateColumn({ nullable: true, type: 'timestamp' })
+    deleted_at?: Date | null;
 }
