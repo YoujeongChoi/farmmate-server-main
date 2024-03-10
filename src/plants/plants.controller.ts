@@ -8,7 +8,7 @@ import {
   Delete,
   UploadedFiles,
   UseInterceptors,
-  BadRequestException, UploadedFile, Logger
+  BadRequestException, UploadedFile, Logger, Res
 } from '@nestjs/common';
 import { PlantsService } from './plants.service';
 import { CreatePlantDto } from './dto/create-plant.dto';
@@ -20,6 +20,7 @@ import {DiagnosePlantDto} from "./dto/diagnose-plant.dto";
 import axios from "axios";
 import { Express } from 'express';
 import * as FormData from 'form-data';
+import { Response } from "express"
 
 @Controller('api/plant')
 export class PlantsController {
@@ -61,8 +62,15 @@ export class PlantsController {
   }
 
   @Post("/:plantUuid/bookmark")
-  async bookmark(@Param('plantUuid') plantUuid: string): Promise<string> {
-    return this.plantsService.bookmark(plantUuid);
+  async bookmark(@Param('plantUuid') plantUuid: string, @Res() response: Response): Promise<Response> {
+    const result = await this.plantsService.bookmark(plantUuid);
+    if (result === '북마크가 등록되었습니다.') {
+      return response.status(201).json({ code: 201,  message: "bookmark" });
+    } else if (result === '북마크가 다시 등록되었습니다.') {
+      return response.status(201).json({ code: 201, message: "bookmark" }); // 재등록도 등록으로 간주
+    } else {
+      return response.status(202).json({ code: 202, message: "cancelled" });
+    }
   }
 
   @Delete("/:plantUuid")
