@@ -14,13 +14,13 @@ export class Bookmark {
     @PrimaryGeneratedColumn('uuid')
     bookmark_uuid : string;
 
-    @ManyToOne(() => Plant, { nullable: true })
+    @ManyToOne(() => Plant, plant => plant.plant_uuid, { nullable: true })
     @JoinColumn({ name: 'plant_uuid' })
-    plant_uuid: string;
+    plant: Plant;
 
-    @ManyToOne(() => Device, { nullable: true })
+    @ManyToOne(() => Device, device => device.device_id, { nullable: true })
     @JoinColumn({ name: 'device_id' })
-    device_id: string;
+    device: Device;
 
     @CreateDateColumn()
     created_at: Date;

@@ -14,12 +14,13 @@ export class Plant {
     @PrimaryGeneratedColumn('uuid')
     plant_uuid: string;
 
-    @ManyToOne(() => Device, { nullable: true })
+    @ManyToOne(() => Device, device => device.device_id, { nullable: true })
     @JoinColumn({ name: 'device_id' })
-    device_id: string;
+    device: Device;
 
     @Column({ nullable: true })
     plant_type: string;
+
 
     @Column({ nullable: true })
     plant_name: string;

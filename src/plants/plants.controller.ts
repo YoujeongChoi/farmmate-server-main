@@ -21,6 +21,7 @@ import axios from "axios";
 import { Express } from 'express';
 import * as FormData from 'form-data';
 import { Response } from "express"
+import {Bookmark} from "./entities/bookmark.entity";
 
 @Controller('api/plant')
 export class PlantsController {
@@ -42,7 +43,7 @@ export class PlantsController {
   async create(
       @Body() createPlantDto: CreatePlantDto,
       @UploadedFiles() files: { plantImg?: Express.Multer.File[] }
-  ): Promise<Plant> {
+  ): Promise<Plant[]> {
     const imageFile = files.plantImg?.[0]; // 이미지 파일
     let imageUrl;
 
@@ -73,7 +74,10 @@ export class PlantsController {
     }
   }
 
-  @Get("/:plantUuid/bookmark")
+  @Get('/device/:deviceId/bookmark')
+  async getAllBookmarksByDeviceId(@Param('deviceId') deviceId: string): Promise<Plant[]> {
+    return this.plantsService.findAllBookmarksByDeviceId(deviceId);
+  }
 
 
   @Delete("/:plantUuid")
