@@ -73,6 +73,9 @@ export class PlantsController {
     }
   }
 
+  @Get("/:plantUuid/bookmark")
+
+
   @Delete("/:plantUuid")
   async remove(@Param("plant_uuid") plant_uuid: string): Promise<void> {
     return this.plantsService.deleteOne(plant_uuid);

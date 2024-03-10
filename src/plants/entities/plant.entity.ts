@@ -34,6 +34,7 @@ export class Plant {
     first_planting_date: string;
 
     @CreateDateColumn()
+
     created_at: Date;
 
     @UpdateDateColumn()

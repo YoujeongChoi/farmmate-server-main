@@ -7,6 +7,7 @@ import {
     JoinColumn
 } from 'typeorm';
 import { Plant } from "./plant.entity"
+import {Device} from "../../devices/entities/device.entity";
 
 @Entity({schema: 'app', name : 'bookmark'})
 export class Bookmark {
@@ -16,6 +17,10 @@ export class Bookmark {
     @ManyToOne(() => Plant, { nullable: true })
     @JoinColumn({ name: 'plant_uuid' })
     plant_uuid: string;
+
+    @ManyToOne(() => Device, { nullable: true })
+    @JoinColumn({ name: 'device_id' })
+    device_id: string;
 
     @CreateDateColumn()
     created_at: Date;

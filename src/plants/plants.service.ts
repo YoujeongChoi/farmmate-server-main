@@ -52,13 +52,24 @@ export class PlantsService {
   }
 
   async bookmark(plantUuid: string): Promise<string> {
+    const plant = await this.plantsRepository.findOne({
+      where: { plant_uuid: plantUuid },
+      relations: ['device_id']
+    });
+
+    if (!plant) {
+      throw new NotFoundException(`Plant with UUID ${plantUuid} not found.`);
+    }
+
     const existingBookmark = await this.bookmarkRepository.findOne({
       where: { plant_uuid: plantUuid },
       withDeleted: true
     });
 
     if (!existingBookmark) {
-      const newBookmark = this.bookmarkRepository.create({plant_uuid: plantUuid} );
+      const newBookmark = this.bookmarkRepository.create({
+        plant_uuid: plantUuid,
+        device_id: plant.device_id} );
       await this.bookmarkRepository.save(newBookmark);
       return '북마크가 등록되었습니다.';
     } else {
