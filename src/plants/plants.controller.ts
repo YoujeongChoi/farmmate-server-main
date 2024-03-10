@@ -60,6 +60,11 @@ export class PlantsController {
     });
   }
 
+  @Post("/:plantUuid/bookmark")
+  async bookmark(@Param('plantUuid') plantUuid: string): Promise<string> {
+    return this.plantsService.bookmark(plantUuid);
+  }
+
   @Delete("/:plantUuid")
   async remove(@Param("plant_uuid") plant_uuid: string): Promise<void> {
     return this.plantsService.deleteOne(plant_uuid);
@@ -97,21 +102,20 @@ export class PlantsController {
       throw new BadRequestException('Image file is required');
     }
 
-    // 이미지 파일과 plantType을 FormData로 준비
+
     const formData = new FormData();
     formData.append('plantType', diagnosePlantDto.plantType);
     formData.append('image', image.buffer, image.originalname);
 
     try {
       this.logger.debug(`Sending request to Flask with plantType: ${diagnosePlantDto.plantType} and image: ${image.originalname}`);
-      // Flask 딥러닝 API로 요청 전송
       const response = await axios.post('http://127.0.0.1:5000/analyze', formData, {
         headers: {
           ...formData.getHeaders(),
         },
       });
 
-      // Flask 서버로부터 받은 응답 반환
+
       return response.data;
     } catch (error) {
       throw new BadRequestException('Failed to diagnose plant');

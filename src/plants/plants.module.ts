@@ -6,10 +6,11 @@ import {Plant} from "./entities/plant.entity";
 import {Device} from "../devices/entities/device.entity";
 import {AwsService} from "../aws/aws.service";
 import {HttpModule, HttpService} from "@nestjs/axios";
+import {Bookmark} from "./entities/bookmark.entity";
 
 @Module({
   imports: [
-      TypeOrmModule.forFeature([Plant, Device]),
+      TypeOrmModule.forFeature([Plant, Device, Bookmark]),
       HttpModule,
   ],
   controllers: [PlantsController],

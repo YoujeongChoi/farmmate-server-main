@@ -5,6 +5,7 @@ import { Plant } from './entities/plant.entity';
 import { CreatePlantDto } from './dto/create-plant.dto';
 import { UpdatePlantDto } from './dto/update-plant.dto';
 import {Device} from "../devices/entities/device.entity";
+import { Bookmark } from "./entities/bookmark.entity"
 
 import axios from 'axios';
 import * as FormData from 'form-data';
@@ -16,6 +17,8 @@ export class PlantsService {
       private plantsRepository: Repository<Plant>,
       @InjectRepository(Device)
       private deviceRepository: Repository<Device>,
+      @InjectRepository(Bookmark)
+      private bookmarkRepository: Repository<Bookmark>
   ) {}
 
   getAll(): Promise<Plant[]> {
@@ -47,6 +50,28 @@ export class PlantsService {
     await this.plantsRepository.save(newPlant);
     return newPlant;
   }
+
+  async bookmark(plantUuid: string): Promise<string> {
+    const existingBookmark = await this.bookmarkRepository.findOne({
+      where: { plant_uuid: plantUuid },
+      withDeleted: true
+    });
+
+    if (!existingBookmark) {
+      const newBookmark = this.bookmarkRepository.create({plant_uuid: plantUuid} );
+      await this.bookmarkRepository.save(newBookmark);
+      return '북마크가 등록되었습니다.';
+    } else {
+      if (existingBookmark.deleted_at) {
+        await this.bookmarkRepository.recover(existingBookmark);
+        return '북마크가 등록되었습니다.';
+      } else {
+        await this.bookmarkRepository.softDelete({ bookmark_uuid: existingBookmark.bookmark_uuid });
+        return '북마크가 해제되었습니다.';
+      }
+    }
+  }
+
 
 
   async deleteOne(plant_uuid: string): Promise<void> {
