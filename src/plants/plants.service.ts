@@ -46,7 +46,6 @@ export class PlantsService {
       image_url: plantData.imageUrl,
     };
 
-    // deviceInstance가 null이 아니면 device 필드를 추가합니다.
     if (deviceInstance) {
       plantDetails.device = deviceInstance;
     }
@@ -57,24 +56,23 @@ export class PlantsService {
   }
 
   async bookmark(plantUuid: string): Promise<string> {
-    // 해당 식물의 정보를 조회합니다.
     const plant = await this.plantsRepository.findOne({
       where: { plant_uuid: plantUuid },
       relations: ['device'],
     });
 
-    // 식물이 존재하지 않으면 예외를 발생시킵니다.
+
     if (!plant) {
       throw new NotFoundException(`Plant with UUID ${plantUuid} not found.`);
     }
 
-    // 북마크를 조회합니다. (이미 존재하는지 확인)
+
     const existingBookmark = await this.bookmarkRepository.findOne({
       where: { plant: { plant_uuid: plantUuid } },
       withDeleted: true
     });
 
-    // 북마크가 없으면 새로 생성합니다.
+
     if (!existingBookmark) {
       const newBookmark = this.bookmarkRepository.create({
         plant: plant,
@@ -83,13 +81,11 @@ export class PlantsService {
       await this.bookmarkRepository.save(newBookmark);
       return '북마크가 등록되었습니다.';
     } else {
-      // 이미 북마크가 있고 삭제된 경우 다시 활성화
       if (existingBookmark.deleted_at) {
         existingBookmark.deleted_at = null;
         await this.bookmarkRepository.save(existingBookmark);
         return '북마크가 다시 등록되었습니다.';
       } else {
-        // 이미 북마크가 있는 경우 삭제
         await this.bookmarkRepository.softDelete({ bookmark_uuid: existingBookmark.bookmark_uuid });
         return '북마크가 해제되었습니다.';
       }
@@ -98,22 +94,16 @@ export class PlantsService {
 
 
   async findAllBookmarksByDeviceId(deviceId: string): Promise<Plant[]> {
-    // Fetch all bookmarks where 'device_id' matches and they are not deleted.
     const bookmarks = await this.bookmarkRepository.find({
       where: { device: { device_id: deviceId }, deleted_at: IsNull() },
       relations: ['plant'] // This should match the relation name in Bookmark entity.
     });
 
-    // Extract the plant UUIDs from the bookmarks.
-    // The relation in Bookmark entity should automatically resolve to Plant entity,
-    // so make sure 'plant' is correctly populated.
     const plantIds = bookmarks.map(bookmark => bookmark.plant?.plant_uuid).filter(uuid => uuid != null);
 
     if (plantIds.length === 0) {
-      return []; // Return an empty array if there are no associated plants.
+      return [];
     }
-
-    // Fetch all plants where 'plant_uuid' is in the list of extracted plant UUIDs.
     const plants = await this.plantsRepository.find({
       where: { plant_uuid: In(plantIds) }
     });

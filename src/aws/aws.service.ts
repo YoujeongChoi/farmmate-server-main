@@ -4,7 +4,7 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 @Injectable()
 export class AwsService {
-  private s3Client: S3Client;  // 프로퍼티 이름을 s3Client로 변경
+  private s3Client: S3Client;
 
   constructor(private readonly configService: ConfigService) {
     const region = this.configService.get<string>('AWS_BUCKET_REGION');
@@ -15,7 +15,7 @@ export class AwsService {
       throw new Error('AWS credentials are not provided');
     }
 
-    this.s3Client = new S3Client({  // this.s3Client로 변경
+    this.s3Client = new S3Client({
       region,
       credentials: {
         accessKeyId,
@@ -34,9 +34,9 @@ export class AwsService {
       throw new Error('AWS S3 bucket name is not provided in the environment variables');
     }
 
-    // Provide a default fileName if null
+
     const safeFileName = fileName ?? `default_${Date.now()}`;
-    const safeExt = ext ?? 'jpg'; // Provide a default extension if null
+    const safeExt = ext ?? 'jpg';
 
     const command = new PutObjectCommand({
       Bucket: bucketName,

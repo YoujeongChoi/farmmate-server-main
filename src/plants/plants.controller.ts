@@ -48,13 +48,12 @@ export class PlantsController {
     let imageUrl;
 
     if (imageFile) {
-      // AWS Service를 사용하여 파일을 S3에 업로드하고, 업로드된 파일의 URL을 가져옵니다.
       imageUrl = await this.awsService.imageUploadToS3(`plants/${Date.now()}_${imageFile.originalname}`, imageFile, imageFile.mimetype.split('/')[1]);
     } else {
       imageUrl = null
     }
 
-    // 식물 정보와 이미지 URL을 함께 저장
+
     return this.plantsService.create({
       ...createPlantDto,
       imageUrl
