@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   UploadedFiles,
@@ -30,7 +30,7 @@ export class PlantsController {
       private readonly awsService: AwsService
   ) {}
 
-  // 식물
+  // 개별 식물 조회
   @Get('/:plantUuid')
   async findOne(@Param('plantUuid') plantUuid: string): Promise<any> {
     return this.plantsService.getOne(plantUuid);
@@ -53,14 +53,24 @@ export class PlantsController {
       imageUrl = null
     }
 
-
     return this.plantsService.create({
       ...createPlantDto,
       imageUrl
-
     });
   }
 
+  @Delete("/:plantUuid")
+  async remove(@Param("plantUuid") plant_uuid: string): Promise<void> {
+    return this.plantsService.deleteOne(plant_uuid);
+  }
+
+
+  @Put("/:plantUuid")
+  async update(@Param("plant_uuid") plant_uuid: string, @Body() updateData: UpdatePlantDto): Promise<any> {
+    return this.plantsService.update(plant_uuid, updateData);
+  }
+
+  // 북마크 등록
   @Post("/:plantUuid/bookmark")
   async bookmark(@Param('plantUuid') plantUuid: string, @Res() response: Response): Promise<Response> {
     const result = await this.plantsService.bookmark(plantUuid);
@@ -73,21 +83,12 @@ export class PlantsController {
     }
   }
 
+  // 북마크 리스트 조회
   @Get('/device/:deviceId/bookmark')
   async getAllBookmarksByDeviceId(@Param('deviceId') deviceId: string): Promise<Plant[]> {
     return this.plantsService.findAllBookmarksByDeviceId(deviceId);
   }
 
-
-  @Delete("/:plantUuid")
-  async remove(@Param("plant_uuid") plant_uuid: string): Promise<void> {
-    return this.plantsService.deleteOne(plant_uuid);
-  }
-
-  @Patch("/:plantUuid")
-  async update(@Param("plant_uuid") plant_uuid: string, @Body() updateData: UpdatePlantDto): Promise<Plant> { // 메서드 파라미터 이름 변경
-    return this.plantsService.update(plant_uuid, updateData);
-  }
 
   @Get('/device/:deviceId')
   async getAllByDeviceId(@Param('deviceId') deviceId: string): Promise<Plant[]> {

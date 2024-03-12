@@ -22,7 +22,7 @@ export class Bookmark {
     @JoinColumn({ name: 'device_id' })
     device: Device;
 
-    @CreateDateColumn()
+    @CreateDateColumn({type: 'timestamp'})
     created_at: Date;
 
     @DeleteDateColumn({ nullable: true, type: 'timestamp' })

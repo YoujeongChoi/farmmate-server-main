@@ -27,13 +27,15 @@ export class PlantsService {
 
   // 식물 조회
   async getOne(plant_uuid: string): Promise<any> {
-    const plant = await this.plantsRepository.findOneBy({ plant_uuid });
+    const plant = await this.plantsRepository.findOne({
+      where: { plant_uuid }
+    });
+
     if (!plant) {
       throw new NotFoundException(`Plant with UUID ${plant_uuid} not found`);
     }
     const bookmark = await this.bookmarkRepository.findOne({
-      where: { plant : {plant_uuid: plant_uuid}},
-      withDeleted: true
+      where: { plant : {plant_uuid: plant_uuid}}
     })
 
     const plantResponse = {
@@ -66,6 +68,21 @@ export class PlantsService {
     await this.plantsRepository.save(newPlant);
     return newPlant;
   }
+
+  async update(plant_uuid: string, updateData: UpdatePlantDto): Promise<any> {
+    const plant = await this.getOne(plant_uuid);
+    Object.assign(plant, updateData);
+    await this.plantsRepository.save(plant);
+    return plant;
+  }
+
+  async deleteOne(plant_uuid: string): Promise<void> {
+    const result = await this.plantsRepository.softDelete({ plant_uuid });
+    if (result.affected === 0) {
+      throw new NotFoundException(`Plant with UUID ${plant_uuid} not found`);
+    }
+  }
+
 
   async bookmark(plantUuid: string): Promise<string> {
     const plant = await this.plantsRepository.findOne({
@@ -123,24 +140,6 @@ export class PlantsService {
     return plants;
   }
 
-
-
-
-
-
-  async deleteOne(plant_uuid: string): Promise<void> {
-    const result = await this.plantsRepository.delete({ plant_uuid });
-    if (result.affected === 0) {
-      throw new NotFoundException(`Plant with UUID ${plant_uuid} not found`);
-    }
-  }
-
-  async update(plant_uuid: string, updateData: UpdatePlantDto): Promise<Plant> {
-    const plant = await this.getOne(plant_uuid);
-    Object.assign(plant, updateData);
-    await this.plantsRepository.save(plant);
-    return plant;
-  }
 
   async getAllByDeviceId(deviceId: string): Promise<Plant[]> {
     const plants = await this.plantsRepository.find({ where: {device : { device_id: deviceId }} });

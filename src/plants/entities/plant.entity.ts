@@ -5,7 +5,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     ManyToOne,
-    JoinColumn
+    JoinColumn, DeleteDateColumn
 } from 'typeorm';
 import {Device} from "../../devices/entities/device.entity";
 
@@ -34,12 +34,14 @@ export class Plant {
     @Column({ nullable: true })
     first_planting_date: string;
 
-    @CreateDateColumn()
-
+    @CreateDateColumn({type: 'timestamp'})
     created_at: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({type: 'timestamp'})
     updated_at: Date;
+
+    @DeleteDateColumn({ nullable: true, type: 'timestamp' })
+    deleted_at?: Date | null;
 
     @Column({ nullable: true })
     image_url?: string;
