@@ -25,12 +25,24 @@ export class PlantsService {
     return this.plantsRepository.find();
   }
 
-  async getOne(plant_uuid: string): Promise<Plant> {
+  // 식물 조회
+  async getOne(plant_uuid: string): Promise<any> {
     const plant = await this.plantsRepository.findOneBy({ plant_uuid });
     if (!plant) {
       throw new NotFoundException(`Plant with UUID ${plant_uuid} not found`);
     }
-    return plant;
+    const bookmark = await this.bookmarkRepository.findOne({
+      where: { plant : {plant_uuid: plant_uuid}},
+      withDeleted: true
+    })
+
+    const plantResponse = {
+      ...plant,
+      bookmark: bookmark ? {
+        bookmark_uuid: bookmark.bookmark_uuid,
+      } : null
+    };
+    return plantResponse;
   }
 
   async create(plantData: CreatePlantDto): Promise<Plant[]> {

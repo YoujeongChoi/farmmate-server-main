@@ -32,7 +32,7 @@ export class PlantsController {
 
   // 식물
   @Get('/:plantUuid')
-  async findOne(@Param('plantUuid') plantUuid: string): Promise<Plant> {
+  async findOne(@Param('plantUuid') plantUuid: string): Promise<any> {
     return this.plantsService.getOne(plantUuid);
   }
 
