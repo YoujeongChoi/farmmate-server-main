@@ -30,6 +30,12 @@ export class PlantsController {
       private readonly awsService: AwsService
   ) {}
 
+  // 특정 디바이스가 생성한 식물 리스트 조회
+  @Get('/device/:deviceId')
+  async getAllByDeviceId(@Param('deviceId') deviceId: string): Promise<Plant[]> {
+    return this.plantsService.getAllByDeviceId(deviceId);
+  }
+
   // 개별 식물 조회
   @Get('/:plantUuid')
   async findOne(@Param('plantUuid') plantUuid: string): Promise<any> {
@@ -106,12 +112,6 @@ export class PlantsController {
   @Get('/device/:deviceId/bookmark')
   async getAllBookmarksByDeviceId(@Param('deviceId') deviceId: string): Promise<Plant[]> {
     return this.plantsService.findAllBookmarksByDeviceId(deviceId);
-  }
-
-
-  @Get('/device/:deviceId')
-  async getAllByDeviceId(@Param('deviceId') deviceId: string): Promise<Plant[]> {
-    return this.plantsService.getAllByDeviceId(deviceId);
   }
 
   /*

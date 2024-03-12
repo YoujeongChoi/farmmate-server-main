@@ -25,6 +25,34 @@ export class PlantsService {
     return this.plantsRepository.find();
   }
 
+  // 디바이스별로 생성된 식물 리스트 조회
+  async getAllByDeviceId(deviceId: string): Promise<any[]> {
+    const plants = await this.plantsRepository.find({
+      where: { device: { device_id: deviceId } },
+      relations: ['device']
+    });
+
+    if (!plants.length) {
+      throw new NotFoundException(`Plants with Device Id ${deviceId} not found`);
+    }
+
+    const plantsWithBookmarks = await Promise.all(plants.map(async (plant) => {
+      const bookmark = await this.bookmarkRepository.findOne({
+        where: { plant: { plant_uuid: plant.plant_uuid } }
+      });
+
+      return {
+        ...plant,
+        bookmark: bookmark ? {
+          bookmark_uuid: bookmark.bookmark_uuid,
+        } : null
+      };
+    }));
+
+    return plantsWithBookmarks;
+  }
+
+
   // 식물 조회
   async getOne(plant_uuid: string): Promise<any> {
     const plant = await this.plantsRepository.findOne({
@@ -137,12 +165,6 @@ export class PlantsService {
       where: { plant_uuid: In(plantIds) }
     });
 
-    return plants;
-  }
-
-
-  async getAllByDeviceId(deviceId: string): Promise<Plant[]> {
-    const plants = await this.plantsRepository.find({ where: {device : { device_id: deviceId }} });
     return plants;
   }
 
