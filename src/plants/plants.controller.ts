@@ -150,7 +150,7 @@ export class PlantsController {
         },
       });
 
-      // 여기서 response.data는 예측 결과를 포함하고 있습니다.
+      
       const disease = await this.plantsService.findByPlantTypeAndDiagnosisCode(
           diagnosePlantDto.plantType,
           response.data.predictedClass
