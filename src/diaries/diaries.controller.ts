@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFile, Query
+  UploadedFile, Query, Put
 } from '@nestjs/common';
 import { DiariesService } from './diaries.service';
 import { CreateDiaryDto } from './dto/create-diary.dto';
@@ -18,6 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class DiariesController {
   constructor(private readonly diariesService: DiariesService) {}
 
+  // 다이어리 등록
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(
@@ -37,6 +38,7 @@ export class DiariesController {
     return this.diariesService.create(createDiaryDto, file);
   }
 
+  // 개별 다이어리 조회
   @Get('/:diaryUuid')
   findOne(
       @Param('plantUuid') plantUuid: string
@@ -44,6 +46,7 @@ export class DiariesController {
     return this.diariesService.findOne(plantUuid);
   }
 
+  // 다이어리 리스트 조회 (날짜, 식물별 조회)
   @Get()
   findAll(
       @Query('date') date: string,
@@ -51,7 +54,9 @@ export class DiariesController {
   ) {
     return this.diariesService.findAll(date, plant);
   }
-  @Patch('/:diaryUuid')
+
+  // 다이어리 수정
+  @Put('/:diaryUuid')
   @UseInterceptors(FileInterceptor('image'))
   update(
       @Param('diaryUuid') diaryUuid: string,
@@ -73,7 +78,7 @@ export class DiariesController {
 
 
   @Delete(':diaryUuid')
-  remove(@Param('plantUuid') plantUuid: string, @Param('diaryUuid') diaryUuid: string) {
-    return this.diariesService.remove(plantUuid, diaryUuid);
+  remove(@Param('diaryUuid') diaryUuid: string) {
+    return this.diariesService.remove(diaryUuid);
   }
 }

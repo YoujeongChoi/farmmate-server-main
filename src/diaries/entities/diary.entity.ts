@@ -5,7 +5,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     ManyToOne,
-    JoinColumn
+    JoinColumn, DeleteDateColumn
 } from 'typeorm';
 import {Plant} from "../../plants/entities/plant.entity";
 
@@ -57,10 +57,12 @@ export class Diary {
     @Column({ nullable: true, type: 'varchar' })
     image_url?: string | null;
 
-    @CreateDateColumn()
+    @CreateDateColumn({type: 'timestamp'})
     created_at: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({type: 'timestamp'})
     updated_at: Date;
 
+    @DeleteDateColumn({ nullable: true, type: 'timestamp' })
+    deleted_at?: Date | null;
 }

@@ -61,7 +61,6 @@ export class DiariesService {
       throw new NotFoundException(`Diary #${diaryUuid} not found`);
     }
 
-
     Object.assign(diary, updateDiaryDto);
     diary.image_url = imageUrl || diary.image_url;
 
@@ -69,7 +68,6 @@ export class DiariesService {
 
     return diary;
   }
-
 
 
   async findAll(date?: string, plant?: string) {
@@ -112,10 +110,9 @@ export class DiariesService {
 
 
 
-
-  async remove(plantUuid: string, diaryUuid: string) {
-    // const deleteResult = await this.diaryRepository.delete({ diary_uuid: diaryUuid, plant_uuid: plantUuid });
-    // if (deleteResult.affected === 0) throw new NotFoundException(`Diary #${diaryUuid} not found`);
+  async remove(diaryUuid: string) {
+    const deleteResult = await this.diaryRepository.softDelete({ diary_uuid: diaryUuid });
+    if (deleteResult.affected === 0) throw new NotFoundException(`Diary #${diaryUuid} not found`);
     return true;
   }
 }

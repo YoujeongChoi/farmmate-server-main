@@ -59,12 +59,13 @@ export class PlantsController {
     });
   }
 
+  // 식물 삭제
   @Delete("/:plantUuid")
   async remove(@Param("plantUuid") plant_uuid: string): Promise<void> {
     return this.plantsService.deleteOne(plant_uuid);
   }
 
-
+  // 식물 수정
   @Put("/:plantUuid")
   async update(@Param("plant_uuid") plant_uuid: string, @Body() updateData: UpdatePlantDto): Promise<any> {
     return this.plantsService.update(plant_uuid, updateData);
