@@ -100,6 +100,7 @@ export class DiariesService {
     const diary = await this.diaryRepository.findOne({
       where: {
         diary_uuid: diaryUuid
+
       }
     });
     if (!diary) {

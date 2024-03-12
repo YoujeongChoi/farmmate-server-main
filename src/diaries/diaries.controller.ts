@@ -63,7 +63,6 @@ export class DiariesController {
       @Body() rawBody: any,
       @UploadedFile() file: Express.Multer.File
   ) {
-
     const { waterFlag, fertilizerFlag, pesticideFlag, ...otherFields } = rawBody;
 
     const updateDiaryDto: UpdateDiaryDto = {
@@ -75,6 +74,7 @@ export class DiariesController {
 
     return this.diariesService.update(diaryUuid, updateDiaryDto, file);
   }
+
 
 
   @Delete(':diaryUuid')
