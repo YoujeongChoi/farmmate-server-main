@@ -67,9 +67,27 @@ export class PlantsController {
 
   // 식물 수정
   @Put("/:plantUuid")
-  async update(@Param("plant_uuid") plant_uuid: string, @Body() updateData: UpdatePlantDto): Promise<any> {
-    return this.plantsService.update(plant_uuid, updateData);
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'plantImg', maxCount: 1 }
+  ]))
+  async update(
+      @Param("plantUuid") plant_uuid: string,
+      @Body() updateData: UpdatePlantDto,
+      @UploadedFiles() files?: { plantImg?: Express.Multer.File[] } // files가 선택적이므로 ?를 추가합니다.
+  ): Promise<any> {
+    let imageUrl;
+
+    if (files && files.plantImg && files.plantImg.length > 0) {
+      const imageFile = files.plantImg[0];
+      imageUrl = await this.awsService.imageUploadToS3(`plants/${Date.now()}_${imageFile.originalname}`, imageFile, imageFile.mimetype.split('/')[1]);
+    } else {
+      imageUrl = null;
+    }
+    const updatedData = imageUrl ? {...updateData, imageUrl} : updateData;
+
+    return this.plantsService.update(plant_uuid, updatedData);
   }
+
 
   // 북마크 등록
   @Post("/:plantUuid/bookmark")
