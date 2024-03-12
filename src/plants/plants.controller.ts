@@ -8,7 +8,7 @@ import {
   Delete,
   UploadedFiles,
   UseInterceptors,
-  BadRequestException, UploadedFile, Logger, Res
+  BadRequestException, UploadedFile, Logger, Res, NotFoundException
 } from '@nestjs/common';
 import { PlantsService } from './plants.service';
 import { CreatePlantDto } from './dto/create-plant.dto';
@@ -117,7 +117,9 @@ export class PlantsController {
   /*
   * 진단
   * */
+  // In your PlantsController
   private readonly logger = new Logger(PlantsController.name);
+
   @Post('/diagnose')
   @UseInterceptors(FileInterceptor('image', {
     fileFilter: (req, file, callback) => {
@@ -136,22 +138,27 @@ export class PlantsController {
       throw new BadRequestException('Image file is required');
     }
 
-
     const formData = new FormData();
     formData.append('plantType', diagnosePlantDto.plantType);
     formData.append('image', image.buffer, image.originalname);
 
     try {
       this.logger.debug(`Sending request to Flask with plantType: ${diagnosePlantDto.plantType} and image: ${image.originalname}`);
-      const response = await axios.post('http://127.0.0.1:5000/analyze', formData, {
+      const response = await axios.post('http://127.0.0.1:5000/predict', formData, {
         headers: {
           ...formData.getHeaders(),
         },
       });
 
+      // 여기서 response.data는 예측 결과를 포함하고 있습니다.
+      const disease = await this.plantsService.findByPlantTypeAndDiagnosisCode(
+          diagnosePlantDto.plantType,
+          response.data.predictedClass
+      );
 
-      return response.data;
+      return disease;
     } catch (error) {
+      this.logger.error('Failed to diagnose plant', error.message);
       throw new BadRequestException('Failed to diagnose plant');
     }
   }
