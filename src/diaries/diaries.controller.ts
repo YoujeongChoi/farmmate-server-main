@@ -56,9 +56,9 @@ export class DiariesController {
   @ApiResponse({ status: 200, description: '다이어리 조회에 성공하였습니다' })
   @ApiResponse({ status: 404, description: '다이어리 조회에 실패하였습니다' })
   findOne(
-      @Param('plantUuid') plantUuid: string
+      @Param('diaryUuid') diaryUuid: string
   ) {
-    return this.diariesService.findOne(plantUuid);
+    return this.diariesService.findOne(diaryUuid);
   }
 
   // 다이어리 리스트 조회 (날짜, 식물별 조회)
