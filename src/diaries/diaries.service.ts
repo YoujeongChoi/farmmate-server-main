@@ -52,13 +52,17 @@ export class DiariesService {
 
 
   async update(diaryUuid: string, updateDiaryDto: UpdateDiaryDto, file: Express.Multer.File) {
-    const fileName = file ? `${Date.now()}_${file.originalname}` : null;
-    const ext = file ? file.mimetype.split('/')[1] : null;
-    const imageUrl = file ? await this.awsService.imageUploadToS3(fileName, file, ext) : null;
     const diary = await this.diaryRepository.findOne({ where: { diary_uuid: diaryUuid } });
 
     if (!diary) {
       throw new NotFoundException(`Diary #${diaryUuid} not found`);
+    }
+
+    let imageUrl: string | null = null;
+    if (file) {
+      const fileName = `${Date.now()}_${file.originalname}`;
+      const ext = file.mimetype.split('/')[1];
+      imageUrl = await this.awsService.imageUploadToS3(fileName, file, ext);
     }
 
     const newDiary = new Diary();
@@ -75,7 +79,7 @@ export class DiariesService {
     newDiary.pesticide_name = updateDiaryDto.pesticideName || null;
     newDiary.pesticide_usage = updateDiaryDto.pesticideUsage || null;
     newDiary.memo = updateDiaryDto.memo || null;
-    newDiary.image_url = imageUrl;
+    newDiary.image_url = imageUrl || diary.image_url,
     newDiary.diary_date = updateDiaryDto.diaryDate || null;
     newDiary.plant_weather = updateDiaryDto.plantWeather || null;
     newDiary.temperature = updateDiaryDto.temperature || null;
