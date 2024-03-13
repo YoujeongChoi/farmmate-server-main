@@ -21,7 +21,6 @@ export class Plant {
     @Column({ nullable: true })
     plant_type: string;
 
-
     @Column({ nullable: true })
     plant_name: string;
 

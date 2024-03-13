@@ -72,28 +72,28 @@ export class PlantsController {
   }
 
   // 식물 수정
-  @Put("/:plantUuid")
+  @Put('/:plantUuid')
   @UseInterceptors(FileFieldsInterceptor([
-    { name: 'plantImg', maxCount: 1 }
+    { name: 'plantImg', maxCount: 1 },
   ]))
   async update(
-      @Param("plantUuid") plant_uuid: string,
-      @Body() updateData: UpdatePlantDto,
-      @UploadedFiles() files?: { plantImg?: Express.Multer.File[] } // files가 선택적이므로 ?를 추가합니다.
-  ): Promise<any> {
+      @Param('plantUuid') plantUuid: string,
+      @Body() updatePlantDto: UpdatePlantDto,
+      @UploadedFiles() files: { plantImg?: Express.Multer.File[] }
+  ): Promise<Plant[]> {
+    const imageFile = files?.plantImg?.[0] ;
     let imageUrl;
+    let updatedData;
 
-    if (files && files.plantImg && files.plantImg.length > 0) {
-      const imageFile = files.plantImg[0];
+    if (imageFile) {
       imageUrl = await this.awsService.imageUploadToS3(`plants/${Date.now()}_${imageFile.originalname}`, imageFile, imageFile.mimetype.split('/')[1]);
+      updatedData = { ...updatePlantDto, imageUrl };
     } else {
-      imageUrl = null;
+      updatedData = { ...updatePlantDto };
     }
-    const updatedData = imageUrl ? {...updateData, imageUrl} : updateData;
 
-    return this.plantsService.update(plant_uuid, updatedData);
+    return this.plantsService.update(plantUuid, updatedData);
   }
-
 
   // 북마크 등록
   @Post("/:plantUuid/bookmark")
@@ -150,7 +150,7 @@ export class PlantsController {
         },
       });
 
-      
+
       const disease = await this.plantsService.findByPlantTypeAndDiagnosisCode(
           diagnosePlantDto.plantType,
           response.data.predictedClass

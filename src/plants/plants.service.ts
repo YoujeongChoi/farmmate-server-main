@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {Inject, Injectable, NotFoundException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {In, IsNull, Repository} from 'typeorm';
 import { Plant } from './entities/plant.entity';
@@ -8,8 +8,8 @@ import {Device} from "../devices/entities/device.entity";
 import { Bookmark } from "./entities/bookmark.entity";
 import { Disease } from './entities/disease.entity';
 
-import axios from 'axios';
-import * as FormData from 'form-data';
+import { PipeTransform, BadRequestException} from '@nestjs/common';
+
 
 @Injectable()
 export class PlantsService {
@@ -100,9 +100,17 @@ export class PlantsService {
     return newPlant;
   }
 
-  async update(plant_uuid: string, updateData: UpdatePlantDto): Promise<any> {
+  async update(plant_uuid: string, updateData: UpdatePlantDto): Promise<Plant[]> {
     const plant = await this.getOne(plant_uuid);
-    Object.assign(plant, updateData);
+    const newPlant: any =  {
+      plant_type: updateData.plantType,
+      plant_name: updateData.plantName,
+      plant_location: updateData.plantLocation,
+      memo: updateData.memo,
+      first_planting_date: updateData.firstPlantingDate,
+      image_url: updateData.imageUrl,
+    }
+    Object.assign(plant, newPlant);
     await this.plantsRepository.save(plant);
     return plant;
   }
@@ -189,7 +197,6 @@ export class PlantsService {
 }
 
 
-import { PipeTransform, BadRequestException} from '@nestjs/common';
 
 @Injectable()
 export class FormDataParseBooleanPipe implements PipeTransform<string, boolean> {
@@ -203,6 +210,4 @@ export class FormDataParseBooleanPipe implements PipeTransform<string, boolean> 
     }
   }
 }
-
-
 

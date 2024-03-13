@@ -61,7 +61,35 @@ export class DiariesService {
       throw new NotFoundException(`Diary #${diaryUuid} not found`);
     }
 
-    Object.assign(diary, updateDiaryDto);
+    const newDiary = new Diary();
+    newDiary.image_url = imageUrl;
+    newDiary.diary_date = updateDiaryDto.diaryDate || null;
+    newDiary.plant_weather = updateDiaryDto.plantWeather || null;
+    newDiary.temperature = updateDiaryDto.temperature || null;
+    newDiary.humidity = updateDiaryDto.humidity ||  null;
+    newDiary.water_flag = updateDiaryDto.waterFlag !== undefined ? updateDiaryDto.waterFlag : null;
+    newDiary.fertilizer_flag = updateDiaryDto.fertilizerFlag !== undefined ? updateDiaryDto.fertilizerFlag : null;
+    newDiary.fertilizer_name = updateDiaryDto.fertilizerName || null;
+    newDiary.fertilizer_usage = updateDiaryDto.fertilizerUsage || null;
+    newDiary.pesticide_flag = updateDiaryDto.pesticideFlag !== undefined ? updateDiaryDto.pesticideFlag : null;
+    newDiary.pesticide_name = updateDiaryDto.pesticideName || null;
+    newDiary.pesticide_usage = updateDiaryDto.pesticideUsage || null;
+    newDiary.memo = updateDiaryDto.memo || null;
+    newDiary.image_url = imageUrl;
+    newDiary.diary_date = updateDiaryDto.diaryDate || null;
+    newDiary.plant_weather = updateDiaryDto.plantWeather || null;
+    newDiary.temperature = updateDiaryDto.temperature || null;
+    newDiary.humidity = updateDiaryDto.humidity ||  null;
+    newDiary.water_flag = updateDiaryDto.waterFlag !== undefined ? updateDiaryDto.waterFlag : null;
+    newDiary.fertilizer_flag = updateDiaryDto.fertilizerFlag !== undefined ? updateDiaryDto.fertilizerFlag : null;
+    newDiary.fertilizer_name = updateDiaryDto.fertilizerName || null;
+    newDiary.fertilizer_usage = updateDiaryDto.fertilizerUsage || null;
+    newDiary.pesticide_flag = updateDiaryDto.pesticideFlag !== undefined ? updateDiaryDto.pesticideFlag : null;
+    newDiary.pesticide_name = updateDiaryDto.pesticideName || null;
+    newDiary.pesticide_usage = updateDiaryDto.pesticideUsage || null;
+    newDiary.memo = updateDiaryDto.memo || null;
+
+    Object.assign(diary, newDiary);
     diary.image_url = imageUrl || diary.image_url;
 
     await this.diaryRepository.save(diary);
