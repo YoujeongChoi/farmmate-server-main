@@ -1,10 +1,11 @@
-import {IsBoolean, IsOptional, IsString, IsUUID} from "class-validator";
+import {IsBoolean, IsDateString, IsOptional, IsString, IsUUID} from "class-validator";
 
 export class CreateDiaryDto {
     @IsString()
     @IsOptional()
     readonly plantUuid: string;
 
+    @IsDateString()
     @IsString()
     @IsOptional()
     readonly diaryDate: string;
