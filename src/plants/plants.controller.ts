@@ -21,7 +21,10 @@ import axios from "axios";
 import { Express } from 'express';
 import * as FormData from 'form-data';
 import { Response } from "express"
-import {Bookmark} from "./entities/bookmark.entity";
+import {ApiTags, ApiOperation, ApiBody, ApiResponse, ApiParam} from '@nestjs/swagger'
+import {UpdateDiaryDto} from "../diaries/dto/update-diary.dto";
+import {CreateDiaryDto} from "../diaries/dto/create-diary.dto";
+import {CreateBookmarkDto} from "./dto/create-bookmark.dto";
 
 @Controller('api/plant')
 export class PlantsController {
@@ -32,17 +35,37 @@ export class PlantsController {
 
   // 특정 디바이스가 생성한 식물 리스트 조회
   @Get('/device/:deviceId')
+  @ApiOperation({ summary: '디바이스 식물 리스트 조회', description: '디바이스별 생성된 식물 리스트를 조회합니다.' })
+  @ApiParam({
+    name: 'deviceId',
+    type: 'uuid',
+    description: '조회할 디바이스 uuid',
+  })
+  @ApiResponse({ status: 200, description: '디바이스 식물 리스트 조회에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '디바이스 식물 리스식ㅁ 조회에 실패하였습니다' })
   async getAllByDeviceId(@Param('deviceId') deviceId: string): Promise<Plant[]> {
     return this.plantsService.getAllByDeviceId(deviceId);
   }
 
   // 개별 식물 조회
   @Get('/:plantUuid')
+  @ApiOperation({ summary: '식물 조회', description: '개별 식물 정보를 조회합니다.' })
+  @ApiParam({
+    name: 'plantUuid',
+    type: 'uuid',
+    description: '조회할 식물 uuid',
+  })
+  @ApiResponse({ status: 200, description: '식물 조회에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '식물 조회에 실패하였습니다' })
   async findOne(@Param('plantUuid') plantUuid: string): Promise<any> {
     return this.plantsService.getOne(plantUuid);
   }
 
   @Post()
+  @ApiOperation({ summary: '식물 등록', description: '식물 정보를 추가합니다.' })
+  @ApiBody({ type: CreatePlantDto })
+  @ApiResponse({ status: 200, description: '식물 등록에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '식물 등록에 실패하였습니다' })
   @UseInterceptors(FileFieldsInterceptor([
     { name: 'plantImg', maxCount: 1 }
   ]))
@@ -67,12 +90,24 @@ export class PlantsController {
 
   // 식물 삭제
   @Delete("/:plantUuid")
+  @ApiOperation({ summary: '식물 삭제', description: '식물을 삭제합니다.' })
+  @ApiParam({
+    name: 'plantUuid',
+    type: 'uuid',
+    description: '삭제할 식물 uuid',
+  })
+  @ApiResponse({ status: 200, description: '식물 삭제에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '식물 삭제에 실패하였습니다' })
   async remove(@Param("plantUuid") plant_uuid: string): Promise<void> {
     return this.plantsService.deleteOne(plant_uuid);
   }
 
   // 식물 수정
   @Put('/:plantUuid')
+  @ApiOperation({ summary: '식물 수정', description: '식물 내용을 수정합니다.' })
+  @ApiBody({ type: UpdatePlantDto })
+  @ApiResponse({ status: 200, description: '식물 수정에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '식물 수정에 실패하였습니다' })
   @UseInterceptors(FileFieldsInterceptor([
     { name: 'plantImg', maxCount: 1 },
   ]))
@@ -97,6 +132,14 @@ export class PlantsController {
 
   // 북마크 등록
   @Post("/:plantUuid/bookmark")
+  @ApiOperation({ summary: '북마크 등록', description: '북마크를 등록합니다.' })
+  @ApiParam({
+    name: 'plantUuid',
+    type: 'uuid',
+    description: '북마크에 등록할 식물 uuid',
+  })
+  @ApiResponse({ status: 200, description: '북마크 등록에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '북마크 등록에 실패하였습니다' })
   async bookmark(@Param('plantUuid') plantUuid: string, @Res() response: Response): Promise<Response> {
     const result = await this.plantsService.bookmark(plantUuid);
     if (result === '북마크가 등록되었습니다.') {
@@ -110,6 +153,14 @@ export class PlantsController {
 
   // 북마크 리스트 조회
   @Get('/device/:deviceId/bookmark')
+  @ApiOperation({ summary: '디바이스 북마크 리스트 조회', description: '디바이스별 등록한 북마크 리스트를 조회합니다.' })
+  @ApiParam({
+    name: 'deviceId',
+    type: 'uuid',
+    description: '북마크 리스트 조회할 디바이스 uuid',
+  })
+  @ApiResponse({ status: 200, description: '북마크 리스트 조회에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '북마크 리스 조회에 실패하였습니다' })
   async getAllBookmarksByDeviceId(@Param('deviceId') deviceId: string): Promise<Plant[]> {
     return this.plantsService.findAllBookmarksByDeviceId(deviceId);
   }
@@ -121,6 +172,10 @@ export class PlantsController {
   private readonly logger = new Logger(PlantsController.name);
 
   @Post('/diagnose')
+  @ApiOperation({ summary: '작물 병 진단 요청', description: '병 진단을 요청합니다.' })
+  @ApiBody({ type: DiagnosePlantDto })
+  @ApiResponse({ status: 200, description: '진단 요청에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '진단 요청에 실패하였습니다' })
   @UseInterceptors(FileInterceptor('image', {
     fileFilter: (req, file, callback) => {
       if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
