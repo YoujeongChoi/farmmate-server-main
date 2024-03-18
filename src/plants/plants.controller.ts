@@ -25,6 +25,7 @@ import {ApiTags, ApiOperation, ApiBody, ApiResponse, ApiParam} from '@nestjs/swa
 import {UpdateDiaryDto} from "../diaries/dto/update-diary.dto";
 import {CreateDiaryDto} from "../diaries/dto/create-diary.dto";
 import {CreateBookmarkDto} from "./dto/create-bookmark.dto";
+import {DiagnoseResultDto} from "./dto/diagnose-result.dto";
 
 @Controller('api/plant')
 export class PlantsController {
@@ -217,4 +218,14 @@ export class PlantsController {
       throw new BadRequestException('Failed to diagnose plant');
     }
   }
+
+  @Post('/diagnose/result')
+  @ApiOperation({ summary: '진단 결과 저장', description: '진단 결과를 저장합니다.' })
+  @ApiBody({ type: DiagnoseResultDto })
+  @ApiResponse({ status: 201, description: '진단 결과 저장에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '진단 결과 저장에 실패하였습니다' })
+  async saveDiagnoseResult(@Body() diagnoseResultDto: DiagnoseResultDto): Promise<any> {
+    return this.plantsService.saveDiagnoseResult(diagnoseResultDto);
+  }
 }
+

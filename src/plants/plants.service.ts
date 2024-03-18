@@ -9,6 +9,8 @@ import { Bookmark } from "./entities/bookmark.entity";
 import { Disease } from './entities/disease.entity';
 
 import { PipeTransform, BadRequestException} from '@nestjs/common';
+import {DiagnoseResultDto} from "./dto/diagnose-result.dto";
+import {PlantDisease} from "./entities/plant-diagnose.entity";
 
 
 @Injectable()
@@ -192,6 +194,26 @@ export class PlantsService {
       throw new NotFoundException(`해당 식물 타입(${plantType})과 진단 코드(${diagnosisCode})에 대한 질병 정보를 찾을 수 없습니다.`);
     }
     return disease;
+  }
+
+  async saveDiagnoseResult(diagnoseResultDto: DiagnoseResultDto): Promise<PlantDisease> {
+    const { plantUuid, diseaseUuid } = diagnoseResultDto;
+
+    const plant = await this.plantsRepository.findOne({ where: { plant_uuid: plantUuid } });
+    if (!plant) {
+      throw new NotFoundException(`Plant with UUID ${plantUuid} not found.`);
+    }
+
+    const disease = await this.diseaseRepository.findOne({ where: { diseaseUuid: diseaseUuid } });
+    if (!disease) {
+      throw new NotFoundException(`Disease with UUID ${diseaseUuid} not found.`);
+    }
+
+    const plantDisease = new PlantDisease();
+    plantDisease.plant = plant;
+    plantDisease.disease = disease;
+
+    return await this.plantsRepository.manager.save(plantDisease);
   }
 
 }
