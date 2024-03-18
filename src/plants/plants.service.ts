@@ -216,6 +216,48 @@ export class PlantsService {
     return await this.plantsRepository.manager.save(plantDisease);
   }
 
+  async getDiagnoseResult(plantDiseaseUuid: string): Promise<any> {
+    const plantDisease = await this.plantsRepository.manager.findOne(PlantDisease, {
+      where: { plantDiseaseUuid: plantDiseaseUuid },
+      relations: ['plant', 'disease']
+    });
+
+    if (!plantDisease) {
+      throw new NotFoundException(`PlantDisease with UUID ${plantDiseaseUuid} not found.`);
+    }
+
+    // Optionally, you can format the response here before returning
+    return {
+      plantDiseaseUuid: plantDisease.plantDiseaseUuid,
+      plant: plantDisease.plant,  // This will contain all plant information
+      disease: plantDisease.disease  // This will contain all disease information
+    };
+  }
+
+  async getAllDiagnoseResultsByPlant(plantUuid: string): Promise<any[]> {
+    // Verify the plant exists
+    const plant = await this.plantsRepository.findOne({
+      where: { plant_uuid: plantUuid }
+    });
+
+    if (!plant) {
+      throw new NotFoundException(`Plant with UUID ${plantUuid} not found.`);
+    }
+
+    // Retrieve all PlantDisease instances associated with this plant
+    const plantDiseases = await this.plantsRepository.manager.find(PlantDisease, {
+      where: { plant: { plant_uuid: plantUuid } },
+      relations: ['disease']
+    });
+
+    // If needed, transform the data to fit your API response structure
+    return plantDiseases.map(pd => ({
+      plantDiseaseUuid: pd.plantDiseaseUuid,
+      plantUuid: pd.plant?.plant_uuid,
+      disease: pd.disease  // This contains all the information about the disease
+    }));
+  }
+
 }
 
 

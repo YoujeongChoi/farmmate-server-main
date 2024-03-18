@@ -227,5 +227,32 @@ export class PlantsController {
   async saveDiagnoseResult(@Body() diagnoseResultDto: DiagnoseResultDto): Promise<any> {
     return this.plantsService.saveDiagnoseResult(diagnoseResultDto);
   }
+
+
+  @Get('/diagnose/result/:plantDiseaseUuid')
+  @ApiOperation({ summary: '진단 결과 조회', description: '특정 진단 결과와 관련된 식물 및 질병 정보를 조회합니다.' })
+  @ApiParam({
+    name: 'plantDiseaseUuid',
+    type: 'string',
+    description: '조회할 진단 결과의 UUID',
+  })
+  @ApiResponse({ status: 200, description: '진단 결과 조회에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '진단 결과 조회에 실패하였습니다' })
+  async getDiagnoseResult(@Param('plantDiseaseUuid') plantDiseaseUuid: string): Promise<any> {
+    return this.plantsService.getDiagnoseResult(plantDiseaseUuid);
+  }
+
+  @Get('/diagnose/result/:plantUuid')
+  @ApiOperation({ summary: '식물 진단 결과 리스트 조회', description: '특정 식물에 대한 모든 진단 결과를 조회합니다.' })
+  @ApiParam({
+    name: 'plantUuid',
+    type: 'string',
+    description: '조회할 식물의 UUID',
+  })
+  @ApiResponse({ status: 200, description: '식물 진단 결과 리스트 조회에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '식물 진단 결과 리스트 조회에 실패하였습니다' })
+  async getAllDiagnoseResultsByPlant(@Param('plantUuid') plantUuid: string): Promise<any> {
+    return this.plantsService.getAllDiagnoseResultsByPlant(plantUuid);
+  }
 }
 
