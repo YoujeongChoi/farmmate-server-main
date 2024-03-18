@@ -242,7 +242,7 @@ export class PlantsController {
     return this.plantsService.getDiagnoseResult(plantDiseaseUuid);
   }
 
-  @Get('/diagnose/result/:plantUuid')
+  @Get('/diagnose/result/plant/:plantUuid')
   @ApiOperation({ summary: '식물 진단 결과 리스트 조회', description: '특정 식물에 대한 모든 진단 결과를 조회합니다.' })
   @ApiParam({
     name: 'plantUuid',
@@ -254,5 +254,6 @@ export class PlantsController {
   async getAllDiagnoseResultsByPlant(@Param('plantUuid') plantUuid: string): Promise<any> {
     return this.plantsService.getAllDiagnoseResultsByPlant(plantUuid);
   }
+
 }
 
