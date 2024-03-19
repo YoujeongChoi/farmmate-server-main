@@ -23,6 +23,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install Typescript
+        run: npm install typescript
+
       - name: Apply patches
         run: |
           npx ts-patch install
