@@ -25,13 +25,19 @@ jobs:
         run: npm install
 
       - name: Install ts-patch
-        run: npm install ts-patch
+        run: npm install ts-patch --save-dev
 
-      - name : Check npm list
-        run : ./node_modules/.bin/ts-patch install
+      - name: Check current directory and ts-patch installation
+        run: |
+          pwd
+          ls -l node_modules/.bin
+          npm list ts-patch
 
       - name: Apply ts-patch
         run: npx ts-patch install
+
+      - name : Check npm list
+        run : ./node_modules/.bin/ts-patch install
 
       - name: Install and apply typia
         run: |
