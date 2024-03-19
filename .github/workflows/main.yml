@@ -24,6 +24,9 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name : Check npm list
+        run : npm list typescript
+
       - name: Apply ts-patch
         run: npx ts-patch install
 
