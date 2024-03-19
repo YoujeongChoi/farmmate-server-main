@@ -101,6 +101,8 @@ export class DiariesController {
       ...otherFields,
       waterFlag: waterFlag === 'true',
       fertilizerFlag: fertilizerFlag === 'true',
+
+
       pesticideFlag: pesticideFlag === 'true'
     };
 

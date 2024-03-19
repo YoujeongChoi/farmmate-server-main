@@ -37,6 +37,7 @@ import { DiariesModule } from './diaries/diaries.module';
                     "rejectUnauthorized" : false
                 }
             }),
+
         }),
         PlantsModule,
         DevicesModule,

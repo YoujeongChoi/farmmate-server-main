@@ -263,10 +263,11 @@ export class PlantsController {
   @ApiBody({ type: CreateDiseaseDto })
   @ApiResponse({ status: 201, description: '작물 질병 저장에 성공하였습니다' })
   @ApiResponse({ status: 404, description: '작물 질병 저장에 실패하였습니다' })
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('plantImg'))
   async createDisease(
       @Body() createDiseaseDto: CreateDiseaseDto,
       @UploadedFile() file: Express.Multer.File
+
   ): Promise<any> {
     return this.plantsService.createDisease(createDiseaseDto, file);
   }
@@ -281,7 +282,7 @@ export class PlantsController {
   @ApiBody({ type: UpdateDiseaseDto })
   @ApiResponse({ status: 200, description: '작물 질병 수정에 성공하였습니다' })
   @ApiResponse({ status: 404, description: '작물 질병 수정에 실패하였습니다' })
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('plantImg'))
   async updateDisease(
       @Param('diseaseUuid') diseaseUuid: string,
       @Body() updateDiseaseDto: UpdateDiseaseDto,

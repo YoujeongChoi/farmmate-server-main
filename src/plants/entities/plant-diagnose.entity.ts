@@ -16,6 +16,8 @@ export class PlantDisease {
     plantDiseaseUuid: string;
 
     @ManyToOne(() => Plant, plant => plant.plant_uuid, { nullable: true })
+
+
     @JoinColumn({ name: 'plant_uuid' })
     plant: Plant;
 

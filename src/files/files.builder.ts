@@ -17,6 +17,7 @@ export class MulterBuilder {
 
     constructor(private readonly configService: ConfigService) {
         const region = this.configService.get<string>('AWS_BUCKET_REGION');
+
         const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID');
         const secretAccessKey = this.configService.get<string>('AWS_SECRET_ACCESS_KEY');
 

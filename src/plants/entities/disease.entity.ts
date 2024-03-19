@@ -18,6 +18,8 @@ export class Disease {
     @Column({ type: 'text', name: 'disease_symptom' })
     diseaseSymptom: string;
 
+
+
     @Column({ type: 'text', name: 'disease_cause' })
     diseaseCause: string;
 

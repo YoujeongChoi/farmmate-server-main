@@ -139,6 +139,7 @@ export class DiariesService {
   }
 
 
+
   async remove(diaryUuid: string) {
     const deleteResult = await this.diaryRepository.softDelete({ diary_uuid: diaryUuid });
     if (deleteResult.affected === 0) throw new NotFoundException(`Diary #${diaryUuid} not found`);

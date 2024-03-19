@@ -30,5 +30,6 @@ export class FilesController {
     const uploadedImageUrl = await this.awsService.imageUploadToS3(`${Date.now()}.${ext}`, file, ext);
 
     return { url: uploadedImageUrl }; // 클라이언트에게 URL을 반환합니다.
+
   }
 }

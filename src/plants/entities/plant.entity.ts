@@ -26,6 +26,10 @@ export class Plant {
 
     @Column({ nullable: true })
 
+
+
+
+
     plant_location: string;
 
     @Column({ nullable: true })

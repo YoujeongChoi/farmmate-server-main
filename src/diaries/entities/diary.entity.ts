@@ -48,6 +48,8 @@ export class Diary {
     @Column({ nullable: true, type: 'varchar' })
     pesticide_name: string | null;
 
+
+
     @Column({ nullable: true, type: 'varchar' })
     pesticide_usage: string | null;
 

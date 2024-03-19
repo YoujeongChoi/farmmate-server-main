@@ -22,6 +22,8 @@ export class Bookmark {
     @JoinColumn({ name: 'device_id' })
     device: Device;
 
+
+
     @CreateDateColumn({type: 'timestamp'})
     created_at: Date;
 

@@ -25,4 +25,5 @@ export class DevicesService {
       throw new NotFoundException(`Device with ID "${deviceId}" not found`);
     }
   }
+
 }
