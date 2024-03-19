@@ -24,6 +24,9 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Install ts-patch
+        run: npm install ts-patch
+
       - name : Check npm list
         run : ./node_modules/.bin/ts-patch install
 
