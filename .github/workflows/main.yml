@@ -13,33 +13,24 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
-      - name: Clean npm cache
-        run: npm cache clean --force
+          cache: 'npm'
 
       - name: Install Dependencies
-        if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm install
-
-      - name: Install ts-patch
-        run: npm install ts-patch
 
       - name: Apply ts-patch
         run: npx ts-patch install
 
-      - name: List installed packages
-        run: npm list --depth=0
-
       - name: Install and apply typia
         run: |
-          npx install typia
-          ./node_modules/.bin/typia patch
+          npm install typia
+          npx typia patch
 
       - name: Build project
         run: npm run build
