@@ -20,17 +20,20 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Clean npm cache
+        run: npm cache clean --force
+
       - name: Install dependencies
         run: npm install --force
-
-      - name: Verify TypeScript installation
-        run: npm install -g typescript
 
       - name: Install ts-patch
         run: npm install ts-patch
 
       - name: Apply ts-patch
-        run: npx ts-patch install
+        run: ./node_modules/.bin/ts-patch install
+
+      - name: List installed packages
+        run: npm list --depth=0
 
       - name: Install and apply typia
         run: |
