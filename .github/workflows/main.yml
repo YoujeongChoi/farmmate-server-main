@@ -20,8 +20,11 @@ jobs:
         with:
           node-version: '18'
 
+      - name : Clean Cache
+        run : npm cache clean --force
+
       - name: Install dependencies
-        run: npm install
+        run: npm install --force
 
       - name: Install TypeScript globally
         run: npm install -g typescript
