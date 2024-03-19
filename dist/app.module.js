@@ -19,6 +19,7 @@ const files_module_1 = require("./files/files.module");
 const platform_express_1 = require("@nestjs/platform-express");
 const files_service_1 = require("./files/files.service");
 const aws_module_1 = require("./aws/aws.module");
+const diaries_module_1 = require("./diaries/diaries.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -55,6 +56,7 @@ exports.AppModule = AppModule = __decorate([
                 useClass: files_service_1.FilesService,
             }),
             aws_module_1.AwsModule,
+            diaries_module_1.DiariesModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

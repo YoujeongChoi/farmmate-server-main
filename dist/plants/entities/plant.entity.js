@@ -20,10 +20,10 @@ __decorate([
     __metadata("design:type", String)
 ], Plant.prototype, "plant_uuid", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => device_entity_1.Device, { nullable: true }),
+    (0, typeorm_1.ManyToOne)(() => device_entity_1.Device, device => device.device_id, { nullable: true }),
     (0, typeorm_1.JoinColumn)({ name: 'device_id' }),
-    __metadata("design:type", String)
-], Plant.prototype, "device_id", void 0);
+    __metadata("design:type", device_entity_1.Device)
+], Plant.prototype, "device", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
@@ -45,13 +45,17 @@ __decorate([
     __metadata("design:type", String)
 ], Plant.prototype, "first_planting_date", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)(),
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
 ], Plant.prototype, "created_at", void 0);
 __decorate([
-    (0, typeorm_1.UpdateDateColumn)(),
+    (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
 ], Plant.prototype, "updated_at", void 0);
+__decorate([
+    (0, typeorm_1.DeleteDateColumn)({ nullable: true, type: 'timestamp' }),
+    __metadata("design:type", Object)
+], Plant.prototype, "deleted_at", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)

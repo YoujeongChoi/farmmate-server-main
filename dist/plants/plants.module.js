@@ -14,12 +14,19 @@ const typeorm_1 = require("@nestjs/typeorm");
 const plant_entity_1 = require("./entities/plant.entity");
 const device_entity_1 = require("../devices/entities/device.entity");
 const aws_service_1 = require("../aws/aws.service");
+const axios_1 = require("@nestjs/axios");
+const bookmark_entity_1 = require("./entities/bookmark.entity");
+const disease_entity_1 = require("./entities/disease.entity");
+const plant_diagnose_entity_1 = require("./entities/plant-diagnose.entity");
 let PlantsModule = class PlantsModule {
 };
 exports.PlantsModule = PlantsModule;
 exports.PlantsModule = PlantsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([plant_entity_1.Plant, device_entity_1.Device])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([plant_entity_1.Plant, device_entity_1.Device, bookmark_entity_1.Bookmark, disease_entity_1.Disease, plant_diagnose_entity_1.PlantDisease]),
+            axios_1.HttpModule,
+        ],
         controllers: [plants_controller_1.PlantsController],
         providers: [plants_service_1.PlantsService, aws_service_1.AwsService],
     })

@@ -11,10 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateDeviceDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class CreateDeviceDto {
 }
 exports.CreateDeviceDto = CreateDeviceDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ description: '디바이스 id(PK)' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateDeviceDto.prototype, "deviceId", void 0);
