@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Install TypeScript
-        run: npm install typescript
+        run: npm install typescript -g
 
       - name: Install ts-patch and typia
         run: npm install ts-patch typia
