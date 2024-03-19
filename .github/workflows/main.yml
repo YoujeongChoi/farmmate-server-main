@@ -75,7 +75,7 @@ jobs:
           zip -r ./$GITHUB_SHA.zip . # 이 부분이 파일을 압축하는 명령어입니다
 
       - name: Upload to S3
-        run: aws s3 cp ./$GITHUB_SHA.zip s3://${{ secrets.S3_BUCKET_NAME }}/$GITHUB_SHA.zip --region ${{ secrets.AWS_BUCKET_REGION }}
+        run: aws s3 cp project.zip s3://farmmate-bucket/8339810490.zip --region ap-northeast-2
 
       - name: Code Deploy
         run: aws deploy create-deployment --application-name $CODEDEPLOY_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $CODEDEPLOY_GROUP --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
