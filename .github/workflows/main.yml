@@ -26,10 +26,11 @@ jobs:
       - name: Install TypeScript
         run: npm install typescript
 
-      - name: Install and apply ts-patch
-        run: |
-          npm install ts-patch
-          ./node_modules/.bin/ts-patch install
+      - name: Install ts-patch
+        run: npm install ts-patch
+
+      - name: Apply ts-patch
+        run: npx ts-patch install
 
       - name: Install and apply typia
         run: |
