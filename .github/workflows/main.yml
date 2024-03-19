@@ -34,7 +34,7 @@ jobs:
           npm list ts-patch
 
       - name: Apply ts-patch
-        run: npx ts-patch install
+        run: node_modules/.bin/ts-patch install
 
       - name : Check npm list
         run : ./node_modules/.bin/ts-patch install
@@ -42,6 +42,7 @@ jobs:
       - name: Install and apply typia
         run: |
           npm install typia
+          
           npx typia patch
 
       - name: Build project
@@ -64,5 +65,5 @@ jobs:
           echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> $GITHUB_ENV
 
 env:
-  NODE_ENV: production
+  NODE_ENV: development
   AWS_REGION: ap-northeast-2
