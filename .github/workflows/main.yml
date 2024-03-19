@@ -26,10 +26,8 @@ jobs:
       - name: Install Typescript
         run: npm install typescript
 
-      - name: Apply patches
-        run: |
-          npx ts-patch install
-          npx typia patch
+      - name: Apply TypeScript patches with npx
+        run: npx ts-patch install
 
       - name: Build project
         run: npm run build
