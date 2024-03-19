@@ -203,7 +203,10 @@ let PlantsService = class PlantsService {
         }
         const plantDiseases = await this.plantsRepository.manager.find(plant_diagnose_entity_1.PlantDisease, {
             where: { plant: { plant_uuid: plantUuid } },
-            relations: ['disease']
+            relations: ['disease'],
+            order: {
+                created_at: 'ASC'
+            }
         });
         return plantDiseases.map(pd => ({
             plantDiseaseUuid: pd.plantDiseaseUuid,
