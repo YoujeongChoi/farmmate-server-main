@@ -78,10 +78,11 @@ jobs:
         run: aws s3 cp ./$GITHUB_SHA.zip s3://farmmate-bucket/$GITHUB_SHA.zip --region ap-northeast-2
 
       - name: Code Deploy
-        run: aws deploy create-deployment --application-name $CODEDEPLOY_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $CODEDEPLOY_GROUP --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
+        run: aws deploy create-deployment --application-name $CODEDEPLOY_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $CODEDEPLOY_GROUP --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=$GITHUB_SHA.zip
 
 env:
   NODE_ENV: development
   AWS_REGION: ap-northeast-2
   CODEDEPLOY_NAME: farmmate-server
   CODEDEPLOY_GROUP: production
+  S3_BUCKET_NAME: farmmate-bucket
