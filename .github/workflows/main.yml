@@ -2,9 +2,9 @@ name: farmmate-server
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -23,10 +23,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Typescript
+      - name: Install TypeScript
         run: npm install typescript
 
-      - name: Apply TypeScript patches with npx
+      - name: Install ts-patch and typia
+        run: npm install ts-patch typia
+
+      - name: Apply TypeScript patches
         run: npx ts-patch install
 
       - name: Build project
