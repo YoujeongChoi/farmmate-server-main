@@ -3,7 +3,7 @@ import { Request } from 'express';
 import { S3Client } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 
-export const imageMimeTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/bmp', 'image/webp'];
+export const imageMimeTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/bmp', 'image/webp', 'image/JPG', 'image/JPEG','image/PNG', 'image/BMP', 'image/WEBP'];
 export const mediaMimeTypes = ['video/mp4'];
 
 export class MulterBuilder {

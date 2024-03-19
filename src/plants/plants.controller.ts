@@ -26,6 +26,9 @@ import {UpdateDiaryDto} from "../diaries/dto/update-diary.dto";
 import {CreateDiaryDto} from "../diaries/dto/create-diary.dto";
 import {CreateBookmarkDto} from "./dto/create-bookmark.dto";
 import {DiagnoseResultDto} from "./dto/diagnose-result.dto";
+import {Disease} from "./entities/disease.entity";
+import {CreateDiseaseDto} from "./dto/create-disease.dto";
+import {UpdateDiseaseDto} from "./dto/update-disease.dto";
 
 @Controller('api/plant')
 export class PlantsController {
@@ -255,5 +258,36 @@ export class PlantsController {
     return this.plantsService.getAllDiagnoseResultsByPlant(plantUuid);
   }
 
+  @Post('/disease')
+  @ApiOperation({ summary: '작물 질병 저장', description: '작물 질병을 저장합니다.' })
+  @ApiBody({ type: CreateDiseaseDto })
+  @ApiResponse({ status: 201, description: '작물 질병 저장에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '작물 질병 저장에 실패하였습니다' })
+  @UseInterceptors(FileInterceptor('image'))
+  async createDisease(
+      @Body() createDiseaseDto: CreateDiseaseDto,
+      @UploadedFile() file: Express.Multer.File
+  ): Promise<any> {
+    return this.plantsService.createDisease(createDiseaseDto, file);
+  }
+
+  @Put('/disease/:diseaseUuid')
+  @ApiOperation({ summary: '작물 질병 수정', description: '작물 질병 정보를 수정합니다.' })
+  @ApiParam({
+    name: 'diseaseUuid',
+    type: 'string',
+    description: '수정할 질병의 UUID',
+  })
+  @ApiBody({ type: UpdateDiseaseDto })
+  @ApiResponse({ status: 200, description: '작물 질병 수정에 성공하였습니다' })
+  @ApiResponse({ status: 404, description: '작물 질병 수정에 실패하였습니다' })
+  @UseInterceptors(FileInterceptor('image'))
+  async updateDisease(
+      @Param('diseaseUuid') diseaseUuid: string,
+      @Body() updateDiseaseDto: UpdateDiseaseDto,
+      @UploadedFile() file: Express.Multer.File
+  ): Promise<any> {
+    return this.plantsService.updateDisease(diseaseUuid, updateDiseaseDto, file);
+  }
 }
 

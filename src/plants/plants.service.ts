@@ -11,6 +11,9 @@ import { Disease } from './entities/disease.entity';
 import { PipeTransform, BadRequestException} from '@nestjs/common';
 import {DiagnoseResultDto} from "./dto/diagnose-result.dto";
 import {PlantDisease} from "./entities/plant-diagnose.entity";
+import {CreateDiseaseDto} from "./dto/create-disease.dto";
+import {AwsService} from "../aws/aws.service";
+import {UpdateDiseaseDto} from "./dto/update-disease.dto";
 
 
 @Injectable()
@@ -23,7 +26,8 @@ export class PlantsService {
       @InjectRepository(Bookmark)
       private bookmarkRepository: Repository<Bookmark>,
       @InjectRepository(Disease)
-      private diseaseRepository: Repository<Disease>
+      private diseaseRepository: Repository<Disease>,
+      private awsService: AwsService
   ) {}
 
   getAll(): Promise<Plant[]> {
@@ -244,20 +248,55 @@ export class PlantsService {
       throw new NotFoundException(`Plant with UUID ${plantUuid} not found.`);
     }
 
-    // Retrieve all PlantDisease instances associated with this plant
     const plantDiseases = await this.plantsRepository.manager.find(PlantDisease, {
       where: { plant: { plant_uuid: plantUuid } },
       relations: ['disease']
     });
 
-    // If needed, transform the data to fit your API response structure
     return plantDiseases.map(pd => ({
       plantDiseaseUuid: pd.plantDiseaseUuid,
       plantUuid: pd.plant?.plant_uuid,
-      disease: pd.disease  // This contains all the information about the disease
+      disease: pd.disease,
+      created_at: pd.created_at
     }));
+
   }
 
+  async createDisease(createDiseaseDto: CreateDiseaseDto, file: Express.Multer.File): Promise<any> {
+
+    let imageUrl;
+    if (file) {
+      imageUrl = await this.awsService.imageUploadToS3(`diseases/${Date.now()}_${file.originalname}`, file, file.mimetype.split('/')[1]);
+    }
+    const disease = this.diseaseRepository.create({
+      ...createDiseaseDto,
+      plantImg: imageUrl
+    });
+    return this.diseaseRepository.save(disease);
+  }
+
+  async updateDisease(diseaseUuid: string, updateDiseaseDto: UpdateDiseaseDto, file: Express.Multer.File): Promise<Disease> {
+    const disease = await this.diseaseRepository.findOne({ where: { diseaseUuid } });
+
+    if (!disease) {
+      throw new NotFoundException(`Disease with UUID ${diseaseUuid} not found.`);
+    }
+
+    let imageUrl = disease.plantImg;
+    if (file) {
+      imageUrl = await this.awsService.imageUploadToS3(`diseases/${Date.now()}_${file.originalname}`, file, file.mimetype.split('/')[1]);
+    }
+
+    disease.diseaseName = updateDiseaseDto.diseaseName || disease.diseaseName;
+    disease.plantName = updateDiseaseDto.plantName || disease.plantName;
+    disease.diseaseCode = updateDiseaseDto.diseaseCode || disease.diseaseCode;
+    disease.diseaseSymptom = updateDiseaseDto.diseaseSymptom || disease.diseaseSymptom;
+    disease.diseaseCause = updateDiseaseDto.diseaseCause || disease.diseaseCause;
+    disease.diseaseTreatment = updateDiseaseDto.diseaseTreatment || disease.diseaseTreatment;
+    disease.plantImg = imageUrl;
+
+    return this.diseaseRepository.save(disease);
+  }
 }
 
 

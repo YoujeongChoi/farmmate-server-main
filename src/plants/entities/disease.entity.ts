@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
+
 @Entity({ schema: 'app', name: 'disease' })
 export class Disease {
     @PrimaryGeneratedColumn('uuid', { name: 'disease_uuid' })
@@ -25,4 +26,7 @@ export class Disease {
 
     @Column({ type: 'integer', name: 'diagnosis_code' })
     diagnosisCode: number;
+
+    @Column({ type: 'varchar', nullable: true, name: 'plant_img'})
+    plantImg?: string;
 }
