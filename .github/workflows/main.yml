@@ -23,8 +23,9 @@ jobs:
       - name: Clean npm cache
         run: npm cache clean --force
 
-      - name: Install dependencies
-        run: npm install --force
+      - name: Install Dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm install
 
       - name: Install ts-patch
         run: npm install ts-patch
