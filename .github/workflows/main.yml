@@ -23,10 +23,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install ts-patch and typia globally
+        run: npm install -g ts-patch typia
+
       - name: Apply patches
         run: |
-          npx ts-patch install
-          npx typia patch
+          ts-patch install
+          typia patch
 
       - name: Build project
         run: npm run build
