@@ -25,7 +25,7 @@ jobs:
         run: npm install
 
       - name : Check npm list
-        run : npm list typescript
+        run : ./node_modules/.bin/ts-patch install
 
       - name: Apply ts-patch
         run: npx ts-patch install
